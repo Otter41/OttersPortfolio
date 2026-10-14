@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Otter's portfolio. Graphics Design background, real development experience and a couple C# projects built while learning!">
+    <meta name="theme-color" content="#151515">
+    <title>Otter / Designs & Programming Developments </title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="container">
+        <a class="brand" href="#home"> <img src="mark.svg" alt="Otter's R logo" width="32" height="32"> Otter / </a>
+        <button id="menuButton" class="menu-button" type="button"
+        aria-controls="mobileNav" aria-expanded="false">
+    ☰
+</button>
+<nav id="mobileNav" aria-label="Main navigation">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+</nav>
+        <button id="themeButton" class="theme-button" type="button" aria-pressed="false">Light mode</button>
+    </header>
+
+    <main class="container" id="home">
+        <section class="hero">
+            <p class="eyebrow"> Design First. Code Second.</p>
+            <h1>If it works but looks <em>iffy/wrong,</em> I'm not done.</h1>
+            <p>I'm Otter. Not gonna say my real name because coursera doesn't allow it. I do graphics design and moved into development and programming at work. I care about how things work and how they look.</p>
+            <a class="glow-button" href="#projects"><span>See mah projects</span></a>
+        </section>
+        <section id="about" class="section">
+            <h2>About Me<span>.</span></h2>
+            <p>My background is in graphics design, so i don't like work that feels unfinished. I want each project to have its own look and to work properly.</p>
+            <p>At my job I also work with C#, React, API's, SQL, XML and database-backed features, so this is not all new to me. I like knowing what my code does, where things happen and how to explain my choices.</p>
+
+
+        </section>
+        <section id="projects" class="section">
+            <h2>Things I've Built<span>.</span></h2>
+            <article class="project">
+                <p class="eyebrow"> Number 1: C# Console App</p>
+                <h3>Library Management System</h3>
+                <p>This project was part of our previous capstones in the full-stack courses and it manages five books, with options to add, remove, search, borrow and return them. Including borrowing limits and input checks.</p>
+
+            </article>
+            <article class="project">
+                <p class="eyebrow">Number 2: C# Console App</p>
+                <h3>Student Grade Management System</h3>
+                <p>This was also part of our previous capstones, the very first one in fact. It stores students and their grades, using classes and lists to keep records organized.</p>
+
+            </article>
+
+
+        </section>
+        <section id="skills" class="section">
+            <h2>My Toolbox<span>.</span></h2>
+            <p><strong>Development:</strong> C#, HTML, CSS, React, SQL, APIs, XML</p>
+            <p><strong>Design:</strong> Graphics Design, UI, Typography, Layout and Motion Graphics.</p>
+
+        </section>
+        <section id="contact" class="section">
+        <h2>Contact<span>.</span></h2>
+        <p>Demo Form For The Capstone. I am not giving my personal email or info out.</p>
+        <form id="contactForm">
+            <label for="contactName">Name</label>
+            <input id="contactName" name="name" required>
+            <label for="contactEmail">Email</label>
+            <input id="contactEmail" name="email" type="email" required>
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" name="message" required></textarea>
+            <button type="submit">Validate message</button>
+            <p id="formStatus" role="status" aria-live="polite"></p>
+        </form>    
+        
+        </section>
+    </main>
+
+    <footer> Built by Otter with HTML, CSS and JavaScript. <a href="#home">Back to TOP</a></footer>
+</body>
+</html>
