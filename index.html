@@ -1,84 +1,182 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Otter's portfolio. Graphics Design background, real development experience and a couple C# projects built while learning!">
-    <meta name="theme-color" content="#151515">
-    <title>Otter / Designs & Programming Developments </title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Otter is an independent creative developer building desktop apps, games, interactive interfaces, and useful experiments.">
+  <meta name="theme-color" content="#090d1a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Otter | Creative Developer">
+  <meta property="og:description" content="Design-minded software, unusual tools, and interfaces that feel alive.">
+  <title>Otter | Creative Developer &amp; Builder</title>
+  <link rel="icon" type="image/svg+xml" href="mark.svg">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-    <header class="container">
-        <a class="brand" href="#home"> <img src="mark.svg" alt="Otter's R logo" width="32" height="32"> Otter / </a>
-        <button id="menuButton" class="menu-button" type="button"
-        aria-controls="mobileNav" aria-expanded="false">
-    ☰
-</button>
-<nav id="mobileNav" aria-label="Main navigation">
-    <a href="#about">About</a>
-    <a href="#projects">Projects</a>
-    <a href="#skills">Skills</a>
-    <a href="#contact">Contact</a>
-</nav>
-        <button id="themeButton" class="theme-button" type="button" aria-pressed="false">Light mode</button>
-    </header>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Otter, back to top">
+        <img src="mark.svg" alt="" width="37" height="37">
+        <span>otter<span class="brand-point">.</span></span>
+        <span class="brand-tag">/ digital workshop</span>
+      </a>
+      <button class="menu-toggle" id="menuButton" type="button" aria-controls="siteNav" aria-expanded="false" aria-label="Open navigation">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="#about">Approach</a>
+        <a href="#stack">Toolbox</a>
+        <a href="#contact">Connect</a>
+      </nav>
+      <button class="theme-switch" id="themeButton" type="button" aria-label="Switch to light theme" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+        <span>Switch mode</span>
+      </button>
+    </div>
+  </header>
 
-    <main class="container" id="home">
-        <section class="hero">
-            <p class="eyebrow"> Design First. Code Second.</p>
-            <h1>If it works but looks <em>iffy/wrong,</em> I'm not done.</h1>
-            <p>I'm Otter. Not gonna say my real name because coursera doesn't allow it. I do graphics design and moved into development and programming at work. I care about how things work and how they look.</p>
-            <a class="glow-button" href="#projects"><span>See mah projects</span></a>
-        </section>
-        <section id="about" class="section">
-            <h2>About Me<span>.</span></h2>
-            <p>My background is in graphics design, so i don't like work that feels unfinished. I want each project to have its own look and to work properly.</p>
-            <p>At my job I also work with C#, React, API's, SQL, XML and database-backed features, so this is not all new to me. I like knowing what my code does, where things happen and how to explain my choices.</p>
+  <main id="main">
+    <section class="hero container" aria-labelledby="hero-heading">
+      <div class="hero-copy">
+        <p class="overline"><span class="signal-dot"></span> Independent maker <span class="overline-separator">/</span> design meets development</p>
+        <h1 id="hero-heading">I make software <span class="hero-gradient">feel alive<span class="hero-stop">.</span></span></h1>
+        <p class="hero-intro">I'm Otter. I build desktop tools, games, and interfaces with a soft spot for thoughtful details, bold visuals, and code that actually does something.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work">Explore my work <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-meta"><span class="meta-asterisk">✳</span><span>Building at the intersection of <strong>pixels and logic.</strong></span></div>
+      </div>
+      <div class="hero-visual" aria-label="Abstract interactive interface illustration">
+        <div class="visual-halo" aria-hidden="true"></div>
+        <div class="showcase-shell tilt-surface">
+          <div class="showcase-top"><span class="traffic-lights"><i></i><i></i><i></i></span><span>otter.exe / workspace</span><span class="mini-icon">↗</span></div>
+          <div class="showcase-body">
+            <div class="showcase-sidebar"><span class="side-mark">O</span><span class="side-dot active"></span><span class="side-dot"></span><span class="side-dot"></span><span class="side-bottom">◈</span></div>
+            <div class="showcase-content">
+              <div class="showcase-caption">CREATIVE ENGINE / 001</div>
+              <div class="showcase-heading">Making things<br><em>move.</em></div>
+              <div class="waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="showcase-bottom"><span><span class="live-dot"></span> IDEAS IN MOTION</span><span>DESIGN × CODE</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="floating-note floating-note-top"><span class="note-spark">✦</span><span>UI should have<br><strong>personality.</strong></span></div>
+        <div class="floating-note floating-note-bottom"><span class="note-terminal">&gt;_</span><span>Build. Break.<br><strong>Make better.</strong></span></div>
+      </div>
+      <a href="#work" class="scroll-cue"><span class="scroll-line" aria-hidden="true"></span> SCROLL TO EXPLORE</a>
+    </section>
 
+    <div class="ticker" aria-hidden="true"><div class="ticker-track">
+      <span>DESKTOP SOFTWARE</span><b>✳</b><span>INTERACTIVE DESIGN</span><b>✳</b><span>CREATIVE EXPERIMENTS</span><b>✳</b><span>GAMES &amp; TOOLS</span><b>✳</b>
+      <span>DESKTOP SOFTWARE</span><b>✳</b><span>INTERACTIVE DESIGN</span><b>✳</b><span>CREATIVE EXPERIMENTS</span><b>✳</b><span>GAMES &amp; TOOLS</span><b>✳</b>
+    </div></div>
 
-        </section>
-        <section id="projects" class="section">
-            <h2>Things I've Built<span>.</span></h2>
-            <article class="project">
-                <p class="eyebrow"> Number 1: C# Console App</p>
-                <h3>Library Management System</h3>
-                <p>This project was part of our previous capstones in the full-stack courses and it manages five books, with options to add, remove, search, borrow and return them. Including borrowing limits and input checks.</p>
+    <section class="section container work-section" id="work" aria-labelledby="work-title">
+      <div class="section-heading reveal">
+        <div><p class="overline overline-purple">01 / SELECTED BUILDS</p><h2 id="work-title">Proof of <span class="serif-accent">curiosity.</span></h2></div>
+        <p>Not just exercises. Real apps, experiments, and little worlds I've been building. Some are private or still growing, so the cards tell you what's what.</p>
+      </div>
+      <div class="filter-bar reveal" role="group" aria-label="Filter projects">
+        <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All projects <span>06</span></button>
+        <button class="filter-chip" type="button" data-filter="desktop" aria-pressed="false">Desktop apps</button>
+        <button class="filter-chip" type="button" data-filter="game" aria-pressed="false">Games</button>
+        <button class="filter-chip" type="button" data-filter="learning" aria-pressed="false">Learning builds</button>
+      </div>
+      <div class="project-grid" id="projectGrid">
+        <article class="project-card project-featured reveal" data-category="desktop">
+          <div class="project-art art-chat" aria-hidden="true">
+            <div class="art-noise"></div>
+            <div class="chat-window">
+              <div class="chat-head"><span class="chat-symbol">◉</span><span>OtterLink</span><small>● LOCAL NETWORK</small></div>
+              <div class="chat-area"><div class="chat-bubble chat-left">Connected nearby.</div><div class="chat-bubble chat-right">No cloud required. ✳</div><div class="chat-bubble chat-left chat-smaller"><i></i><i></i><i></i></div></div>
+              <div class="chat-compose"><span>Type a message…</span><b>↗</b></div>
+            </div>
+            <span class="art-corner">01 / SOFTWARE</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>FEATURED BUILD</span><span>PRIVATE REPO</span></div><h3>OtterLink <span class="title-arrow">↗</span></h3><p>A local-first LAN messenger with a custom WPF interface, device pairing, and temporary conversations. A desktop experiment in usability and network communication.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>.NET / WPF</span><span>Networking</span></div><button class="details-button" data-project="otterlink" type="button" aria-label="Read about OtterLink">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
 
-            </article>
-            <article class="project">
-                <p class="eyebrow">Number 2: C# Console App</p>
-                <h3>Student Grade Management System</h3>
-                <p>This was also part of our previous capstones, the very first one in fact. It stores students and their grades, using classes and lists to keep records organized.</p>
+        <article class="project-card reveal" data-category="desktop">
+          <div class="project-art art-music" aria-hidden="true">
+            <div class="vinyl-ring vinyl-outer"><div class="vinyl-ring vinyl-inner"><div class="vinyl-center">R</div></div></div>
+            <div class="music-player"><small>RHYTHMABOX / NOW PLAYING</small><div class="music-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="music-controls"><span>◂◂</span><span>Ⅱ</span><span>▸▸</span></div></div>
+            <span class="art-corner">02 / MULTIMEDIA</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>PERSONAL PROJECT</span><span>PRIVATE BUILD</span></div><h3>RhythmaBox <span class="title-arrow">↗</span></h3><p>A desktop music player with custom visualizers, themes, and a playback-focused interface. Equal parts engineering and visual experimentation.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>WinForms</span><span>SkiaSharp</span></div><button class="details-button" data-project="rhythmabox" type="button" aria-label="Read about RhythmaBox">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
 
-            </article>
+        <article class="project-card reveal" data-category="desktop">
+          <div class="project-art art-telemetry" aria-hidden="true">
+            <div class="telemetry-panel"><div class="telemetry-head"><span>OTTERSAPEX</span><span>◉ LIVE DATA</span></div><div class="telemetry-numbers"><div><small>SESSION</small><strong>PUSH LAP</strong></div><div><small>DELTA</small><strong>−0.243</strong></div></div><svg class="telemetry-chart" viewBox="0 0 320 95" preserveAspectRatio="none"><path class="chart-grid" d="M0 20H320M0 50H320M0 80H320"></path><path class="chart-glow" d="M0 69L25 64L44 76L68 31L87 53L112 34L140 40L165 10L195 47L224 37L248 53L274 17L296 24L320 10"></path></svg><div class="telemetry-foot">RACE TELEMETRY <span>◌ 60 FPS</span></div></div>
+            <span class="art-corner">03 / MOTORSPORT</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>PERSONAL TOOL</span><span>PRIVATE BUILD</span></div><h3>OttersApex <span class="title-arrow">↗</span></h3><p>An offline F1 telemetry desktop concept centered on live data, configurable connections, and visual feedback for racing sessions.</p><div class="project-bottom"><div class="tags"><span>Desktop</span><span>F1 UDP</span><span>Data UI</span></div><button class="details-button" data-project="ottersapex" type="button" aria-label="Read about OttersApex">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
 
+        <article class="project-card reveal" data-category="game">
+          <div class="project-art art-game" aria-hidden="true">
+            <div class="game-sky"><span class="game-star star-a">✦</span><span class="game-star star-b">✧</span><span class="game-star star-c">✳</span><div class="game-message">TOTALLY SAFE<span>™</span></div><div class="game-platform platform-one"></div><div class="game-platform platform-two"></div><div class="game-platform platform-three"></div><div class="game-character"><span></span><span></span></div><div class="game-spike spike-one"></div><div class="game-spike spike-two"></div><div class="game-spike spike-three"></div></div>
+            <span class="art-corner">04 / UNITY</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>GAME PROJECT</span><span>IN DEVELOPMENT</span></div><h3>Totally Safe <span class="title-arrow">↗</span></h3><p>A 2D platformer that turns expectations against the player. Every trap is a design puzzle, and every failure should teach you something.</p><div class="project-bottom"><div class="tags"><span>Unity</span><span>C#</span><span>Game Design</span></div><button class="details-button" data-project="totallysafe" type="button" aria-label="Read about Totally Safe">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
 
-        </section>
-        <section id="skills" class="section">
-            <h2>My Toolbox<span>.</span></h2>
-            <p><strong>Development:</strong> C#, HTML, CSS, React, SQL, APIs, XML</p>
-            <p><strong>Design:</strong> Graphics Design, UI, Typography, Layout and Motion Graphics.</p>
+        <article class="project-card reveal" data-category="learning">
+          <div class="project-art art-library" aria-hidden="true">
+            <div class="code-window"><div class="code-title"><span><i></i><i></i><i></i></span> library.cs</div><div class="code-lines"><span class="code-purple">public</span> <span class="code-blue">class</span> Library<br>{<br>&nbsp; <span class="code-blue">AddBook</span>(book);<br>&nbsp; <span class="code-blue">FindBook</span>(title);<br>&nbsp; <span class="code-blue">BorrowBook</span>(id);<br>&nbsp; <span class="code-green">// stay organized</span><br>}</div></div>
+            <span class="art-corner">05 / FOUNDATIONS</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>C# FUNDAMENTALS</span></div><h3>Library Management System <span class="title-arrow">↗</span></h3><p>A console-based library manager with book records, searching, borrowing and returning, validation, and borrow limits.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>OOP</span><span>Console</span></div><button class="details-button" data-project="library" type="button" aria-label="Read about Library Management System">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
 
-        </section>
-        <section id="contact" class="section">
-        <h2>Contact<span>.</span></h2>
-        <p>Demo Form For The Capstone. I am not giving my personal email or info out.</p>
-        <form id="contactForm">
-            <label for="contactName">Name</label>
-            <input id="contactName" name="name" required>
-            <label for="contactEmail">Email</label>
-            <input id="contactEmail" name="email" type="email" required>
-            <label for="contactMessage">Message</label>
-            <textarea id="contactMessage" name="message" required></textarea>
-            <button type="submit">Validate message</button>
-            <p id="formStatus" role="status" aria-live="polite"></p>
-        </form>    
-        
-        </section>
-    </main>
+        <article class="project-card reveal" data-category="learning">
+          <div class="project-art art-events" aria-hidden="true">
+            <div class="events-panel"><div class="events-overline">EVENT TRACKER / BLAZOR</div><div class="events-headline">Upcoming sessions<span>↗</span></div><div class="events-list"><div class="event-row"><b>14</b><span>Register attendees<small>Session · 10:00</small></span><em>OPEN</em></div><div class="event-row"><b>18</b><span>Attendance tracking<small>Workshop · 14:30</small></span><em>VIEW</em></div></div></div>
+            <span class="art-corner">06 / WEB APPLICATION</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>WEB APP</span></div><h3>Event &amp; Attendance Tracker <span class="title-arrow">↗</span></h3><p>A Blazor learning build exploring event cards, registration validation, routing, session state, and attendance tracking.</p><div class="project-bottom"><div class="tags"><span>Blazor</span><span>C#</span><span>Forms</span></div><button class="details-button" data-project="events" type="button" aria-label="Read about Event and Attendance Tracker">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
+      </div>
+      <p id="filterStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+      <div class="work-outro reveal"><p>Some experiments live privately, but the curiosity isn't classified.</p><a href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Browse my public GitHub <span aria-hidden="true">↗</span></a></div>
+    </section>
 
-    <footer> Built by Otter with HTML, CSS and JavaScript. <a href="#home">Back to TOP</a></footer>
+    <section class="about-band" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div class="about-visual reveal"><div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-core">O<span>✳</span></div><div class="orbit-label label-design">DESIGN</div><div class="orbit-label label-code">CODE</div><div class="orbit-label label-detail">DETAILS</div></div>
+        <div class="about-copy reveal"><p class="overline overline-purple">02 / HOW I THINK</p><h2 id="about-title">I live somewhere between <span class="serif-accent">how it works</span> and <span class="serif-accent">how it feels.</span></h2><p>My starting point was graphic design. Programming gave that curiosity a new set of tools. Now I gravitate toward projects where the interface, interaction, and underlying logic all matter.</p><p>I like experimenting, polishing the small things, and building something useful rather than stopping when it merely compiles.</p><div class="about-quote"><span>✳</span> Functional is the baseline. Memorable is the goal.</div></div>
+      </div>
+    </section>
+
+    <section class="section container stack-section" id="stack" aria-labelledby="stack-title">
+      <div class="section-heading reveal"><div><p class="overline overline-purple">03 / MY TOOLBOX</p><h2 id="stack-title">The stuff behind <span class="serif-accent">the scenes.</span></h2></div><p>A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every badge on the shelf.</p></div>
+      <div class="stack-grid">
+        <div class="stack-panel reveal"><div class="stack-icon">⌘</div><h3>Build</h3><p>Software, interactions, and the glue that holds them together.</p><div class="skill-list"><span>C#</span><span>.NET</span><span>WPF</span><span>JavaScript</span><span>HTML / CSS</span><span>React</span><span>Blazor</span><span>SQL</span></div></div>
+        <div class="stack-panel reveal"><div class="stack-icon">◈</div><h3>Shape</h3><p>Interfaces should be intuitive, expressive, and a little bit fun.</p><div class="skill-list"><span>UI Design</span><span>Visual Identity</span><span>Motion</span><span>Typography</span><span>Layout</span><span>Blender</span></div></div>
+        <div class="stack-panel reveal"><div class="stack-icon">↗</div><h3>Explore</h3><p>Curiosity doesn't respect categories. Neither do my side projects.</p><div class="skill-list"><span>Unity</span><span>Networking</span><span>Telemetry</span><span>Cloud fundamentals</span><span>Cybersecurity learning</span></div></div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-inner reveal">
+        <p class="overline">04 / KEEP EXPLORING</p><h2 id="contact-title">Got an interesting <span>idea?</span></h2><p>I'm always interested in clever software, unusual design problems, and good builds. Public code and updates live on GitHub. No fake contact forms, no personal details floating around.</p><a class="button button-contact" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
+        <div class="contact-decoration" aria-hidden="true">✳</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-inner"><a class="brand footer-brand" href="#top"><img src="mark.svg" alt="" width="26" height="26"><span>otter<span class="brand-point">.</span></span></a><span>Made with curiosity, CSS, and a suspicious number of tiny tweaks.</span><a href="#top">Back to top ↑</a></div></footer>
+
+  <dialog class="project-dialog" id="projectDialog" aria-labelledby="dialogTitle">
+    <div class="dialog-top"><p class="overline">PROJECT NOTES / PRIVATE-SAFE OVERVIEW</p><button class="dialog-close" id="dialogClose" type="button" aria-label="Close project details">×</button></div>
+    <div class="dialog-body"><p class="dialog-category" id="dialogCategory"></p><h2 id="dialogTitle"></h2><p id="dialogDescription"></p><h3>What went into it</h3><ul id="dialogPoints"></ul><div class="dialog-tags" id="dialogTags"></div><p class="dialog-disclaimer">These are summaries of personal and learning projects, not links to private source code or claims of production deployment.</p></div>
+  </dialog>
 </body>
 </html>
