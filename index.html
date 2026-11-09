@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Otter is an independent creative developer building desktop apps, games, interactive interfaces, and useful experiments.">
-  <meta name="theme-color" content="#090d1a">
+  <meta name="description" content="Otter is a junior full-stack developer and graphics designer building expressive software, immersive interfaces, games, and thoughtful digital experiences.">
+  <meta name="theme-color" content="#050711">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Otter | Creative Developer">
-  <meta property="og:description" content="Design-minded software, unusual tools, and interfaces that feel alive.">
-  <title>Otter | Creative Developer &amp; Builder</title>
+  <meta property="og:title" content="Otter | Full-Stack Developer & Graphics Designer">
+  <meta property="og:description" content="Software, design, and digital experiences from somewhere beyond the ordinary.">
+  <title>Otter | Full-Stack Developer &amp; Graphics Designer</title>
   <link rel="icon" type="image/svg+xml" href="mark.svg">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
@@ -16,6 +16,9 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="scroll-progress" aria-hidden="true"></div>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="cosmic-vignette" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
   <div class="ambient ambient-one" aria-hidden="true"></div>
   <div class="ambient ambient-two" aria-hidden="true"></div>
   <header class="site-header" id="top">
@@ -23,20 +26,18 @@
       <a class="brand" href="#top" aria-label="Otter, back to top">
         <img src="mark.svg" alt="" width="37" height="37">
         <span>otter<span class="brand-point">.</span></span>
-        <span class="brand-tag">/ digital workshop</span>
+        <span class="brand-tag">the digital frontier</span>
       </a>
-      <button class="menu-toggle" id="menuButton" type="button" aria-controls="siteNav" aria-expanded="false" aria-label="Open navigation">
-        <span></span><span></span>
-      </button>
+      <button class="menu-toggle" id="menuButton" type="button" aria-controls="siteNav" aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button>
       <nav class="site-nav" id="siteNav" aria-label="Main navigation">
-        <a href="#work">Work</a>
-        <a href="#about">Approach</a>
-        <a href="#stack">Toolbox</a>
-        <a href="#contact">Connect</a>
+        <a href="#work">Expeditions</a>
+        <a href="#about">About</a>
+        <a href="#stack">Toolkit</a>
+        <a href="#trajectory">Next frontier</a>
+        <a href="#contact">Contact</a>
       </nav>
       <button class="theme-switch" id="themeButton" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
-        <span>Switch mode</span>
+        <span class="theme-switch-orb" aria-hidden="true"></span><span>Switch atmosphere</span>
       </button>
     </div>
   </header>
@@ -44,48 +45,56 @@
   <main id="main">
     <section class="hero container" aria-labelledby="hero-heading">
       <div class="hero-copy">
-        <p class="overline"><span class="signal-dot"></span> Independent maker <span class="overline-separator">/</span> design meets development</p>
-        <h1 id="hero-heading">I make software <span class="hero-gradient">feel alive<span class="hero-stop">.</span></span></h1>
+        <p class="overline"><span class="signal-dot"></span> TRANSMISSION 001 <span class="overline-separator">/</span> DESIGN × DEVELOPMENT</p>
+        <div class="hero-role"><span class="role-star">✳</span> JUNIOR FULL-STACK DEVELOPER <span class="role-divider">/</span> GRAPHICS DESIGNER</div>
+        <h1 id="hero-heading">Building <span class="hero-outline">outside</span> <span class="hero-gradient">the ordinary<span class="hero-stop">.</span></span></h1>
         <p class="hero-intro">I'm Otter. I build desktop tools, games, and interfaces with a soft spot for thoughtful details, bold visuals, and code that actually does something.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#work">Explore my work <span aria-hidden="true">↗</span></a>
-          <a class="button button-quiet" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a class="button button-primary" href="#work">Enter the universe <span aria-hidden="true">↗</span></a>
+          <a class="button button-quiet" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Explore GitHub <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="hero-meta"><span class="meta-asterisk">✳</span><span>Building at the intersection of <strong>pixels and logic.</strong></span></div>
+        <div class="hero-meta"><span class="meta-asterisk">✳</span><span>Design. Engineering. Curiosity. <strong>No boundaries.</strong></span></div>
       </div>
-      <div class="hero-visual" aria-label="Abstract interactive interface illustration">
-        <div class="visual-halo" aria-hidden="true"></div>
-        <div class="showcase-shell tilt-surface">
-          <div class="showcase-top"><span class="traffic-lights"><i></i><i></i><i></i></span><span>otter.exe / workspace</span><span class="mini-icon">↗</span></div>
-          <div class="showcase-body">
-            <div class="showcase-sidebar"><span class="side-mark">O</span><span class="side-dot active"></span><span class="side-dot"></span><span class="side-dot"></span><span class="side-bottom">◈</span></div>
-            <div class="showcase-content">
-              <div class="showcase-caption">CREATIVE ENGINE / 001</div>
-              <div class="showcase-heading">Making things<br><em>move.</em></div>
-              <div class="waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="showcase-bottom"><span><span class="live-dot"></span> IDEAS IN MOTION</span><span>DESIGN × CODE</span></div>
-            </div>
-          </div>
+      <div class="hero-visual" aria-label="Animated orbital artwork representing design, development, and imagination">
+        <div class="galaxy-stage tilt-surface" aria-hidden="true">
+          <div class="nebula-cloud nebula-a"></div><div class="nebula-cloud nebula-b"></div>
+          <div class="deep-orbit orbit-one"></div><div class="deep-orbit orbit-two"></div><div class="deep-orbit orbit-three"></div>
+          <div class="orbital-arc arc-one"></div><div class="orbital-arc arc-two"></div>
+          <div class="planet-glow"></div>
+          <div class="planet-core"><div class="planet-atmosphere"></div><div class="planet-highlight"></div><div class="planet-shadow"></div><div class="planet-mark">O</div></div>
+          <div class="satellite satellite-one"><span>✧</span></div><div class="satellite satellite-two"><span>✦</span></div>
+          <div class="galaxy-dust dust-one"></div><div class="galaxy-dust dust-two"></div>
+          <div class="orbit-tag tag-alpha"><span class="tag-pulse"></span> CREATIVE SYSTEMS <b>01</b></div>
+          <div class="orbit-tag tag-beta">DESIGN × CODE <span>↗</span></div>
+          <div class="orbit-coordinates">51° 28′ 40″ N / ORBIT 001</div>
         </div>
-        <div class="floating-note floating-note-top"><span class="note-spark">✦</span><span>UI should have<br><strong>personality.</strong></span></div>
-        <div class="floating-note floating-note-bottom"><span class="note-terminal">&gt;_</span><span>Build. Break.<br><strong>Make better.</strong></span></div>
+        <div class="hero-visual-caption"><span>FIG. 01</span> WHERE IDEAS FIND THEIR ORBIT</div>
       </div>
-      <a href="#work" class="scroll-cue"><span class="scroll-line" aria-hidden="true"></span> SCROLL TO EXPLORE</a>
+      <a href="#work" class="scroll-cue"><span class="scroll-line" aria-hidden="true"></span> SCROLL TO EXPLORE <span class="scroll-arrow">↓</span></a>
     </section>
 
     <div class="ticker" aria-hidden="true"><div class="ticker-track">
-      <span>DESKTOP SOFTWARE</span><b>✳</b><span>INTERACTIVE DESIGN</span><b>✳</b><span>CREATIVE EXPERIMENTS</span><b>✳</b><span>GAMES &amp; TOOLS</span><b>✳</b>
-      <span>DESKTOP SOFTWARE</span><b>✳</b><span>INTERACTIVE DESIGN</span><b>✳</b><span>CREATIVE EXPERIMENTS</span><b>✳</b><span>GAMES &amp; TOOLS</span><b>✳</b>
+      <span>CREATIVE DEVELOPMENT</span><b>✦</b><span>DIGITAL EXPERIENCES</span><b>✦</b><span>SOFTWARE ENGINEERING</span><b>✦</b><span>VISUAL STORYTELLING</span><b>✦</b>
+      <span>CREATIVE DEVELOPMENT</span><b>✦</b><span>DIGITAL EXPERIENCES</span><b>✦</b><span>SOFTWARE ENGINEERING</span><b>✦</b><span>VISUAL STORYTELLING</span><b>✦</b>
     </div></div>
+
+<div class="signal-band container reveal" aria-label="Portfolio overview">
+      <div class="signal-heading"><span class="signal-icon">✶</span><span>THE UNIVERSE SO FAR</span></div>
+      <div class="signal-item"><strong>08</strong><span>Selected builds</span></div>
+      <div class="signal-item"><strong>02</strong><span>Worlds I work in<br>Code + design</span></div>
+      <div class="signal-item"><strong>∞</strong><span>Things left to learn</span></div>
+      <div class="signal-status"><span class="signal-dot"></span> ALWAYS BUILDING</div>
+    </div>
 
     <section class="section container work-section" id="work" aria-labelledby="work-title">
       <div class="section-heading reveal">
-        <div><p class="overline overline-purple">01 / SELECTED BUILDS</p><h2 id="work-title">Proof of <span class="serif-accent">curiosity.</span></h2></div>
+        <div><p class="overline overline-purple">01 / THE EXPEDITIONS</p><h2 id="work-title">A universe of <span class="serif-accent">projects.</span></h2></div>
         <p>Not just exercises. Real apps, experiments, and little worlds I've been building. Some are private or still growing, so the cards tell you what's what.</p>
       </div>
       <div class="filter-bar reveal" role="group" aria-label="Filter projects">
-        <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All projects <span>06</span></button>
+        <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All projects <span>08</span></button>
         <button class="filter-chip" type="button" data-filter="desktop" aria-pressed="false">Desktop apps</button>
+        <button class="filter-chip" type="button" data-filter="mobile" aria-pressed="false">Mobile</button>
         <button class="filter-chip" type="button" data-filter="game" aria-pressed="false">Games</button>
         <button class="filter-chip" type="button" data-filter="learning" aria-pressed="false">Learning builds</button>
       </div>
@@ -143,6 +152,22 @@
           </div>
           <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>WEB APP</span></div><h3>Event &amp; Attendance Tracker <span class="title-arrow">↗</span></h3><p>A Blazor learning build exploring event cards, registration validation, routing, session state, and attendance tracking.</p><div class="project-bottom"><div class="tags"><span>Blazor</span><span>C#</span><span>Forms</span></div><button class="details-button" data-project="events" type="button" aria-label="Read about Event and Attendance Tracker">Details <span aria-hidden="true">↗</span></button></div></div>
         </article>
+        <article class="project-card project-nebula reveal" data-category="mobile">
+          <div class="project-art art-mobile" aria-hidden="true">
+            <div class="mobile-aura"></div>
+            <div class="mobile-device"><div class="mobile-island"></div><div class="mobile-clock">09:41</div><div class="mobile-weather">✳ &nbsp; A whole new home</div><div class="mobile-widget one"></div><div class="mobile-widget two"></div><div class="mobile-dock"><i></i><i></i><i></i><i></i></div></div>
+            <span class="art-corner">07 / ANDROID EXPERIENCE</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>PERSONAL PROJECT</span><span>IN DEVELOPMENT</span></div><h3>OtteraUI <span class="title-arrow">↗</span></h3><p>A private Android launcher exploring fluid glass interfaces, expressive motion, customizable widgets, and a home screen that feels genuinely personal.</p><div class="project-bottom"><div class="tags"><span>Kotlin</span><span>Compose</span><span>Android</span></div><button class="details-button" data-project="otteraui" type="button" aria-label="Read about OtteraUI">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
+
+        <article class="project-card reveal" data-category="learning">
+          <div class="project-art art-inventory" aria-hidden="true">
+            <div class="inventory-window"><div class="inventory-top">INVENTORYHUB <span>● CONNECTED</span></div><div class="inventory-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="inventory-rows"><span><b>ITEM 001</b><em>IN STOCK</em></span><span><b>ITEM 002</b><em>UPDATED</em></span><span><b>ITEM 003</b><em>READY</em></span></div></div>
+            <span class="art-corner">08 / FULL-STACK STUDY</span>
+          </div>
+          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>PUBLIC REPO</span></div><h3>InventoryHub <span class="title-arrow">↗</span></h3><p>A practical Blazor and .NET integration build connecting the interface to real CRUD endpoints, with the full request-to-response flow tested end to end.</p><div class="project-bottom"><div class="tags"><span>Blazor</span><span>.NET</span><span>REST API</span></div><button class="details-button" data-project="inventoryhub" type="button" aria-label="Read about InventoryHub">Details <span aria-hidden="true">↗</span></button></div></div>
+        </article>
       </div>
       <p id="filterStatus" class="visually-hidden" role="status" aria-live="polite"></p>
       <div class="work-outro reveal"><p>Some experiments live privately, but the curiosity isn't classified.</p><a href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Browse my public GitHub <span aria-hidden="true">↗</span></a></div>
@@ -151,12 +176,12 @@
     <section class="about-band" id="about" aria-labelledby="about-title">
       <div class="container about-grid">
         <div class="about-visual reveal"><div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-core">O<span>✳</span></div><div class="orbit-label label-design">DESIGN</div><div class="orbit-label label-code">CODE</div><div class="orbit-label label-detail">DETAILS</div></div>
-        <div class="about-copy reveal"><p class="overline overline-purple">02 / HOW I THINK</p><h2 id="about-title">I live somewhere between <span class="serif-accent">how it works</span> and <span class="serif-accent">how it feels.</span></h2><p>My starting point was graphic design. Programming gave that curiosity a new set of tools. Now I gravitate toward projects where the interface, interaction, and underlying logic all matter.</p><p>I like experimenting, polishing the small things, and building something useful rather than stopping when it merely compiles.</p><div class="about-quote"><span>✳</span> Functional is the baseline. Memorable is the goal.</div></div>
+        <div class="about-copy reveal"><div class="about-role"><span class="signal-dot"></span> JUNIOR FULL-STACK DEVELOPER &amp; GRAPHICS DESIGNER</div><p class="overline overline-purple">02 / THE HUMAN BEHIND THE SCREEN</p><h2 id="about-title">I live somewhere between <span class="serif-accent">how it works</span> and <span class="serif-accent">how it feels.</span></h2><p>My starting point was graphic design. Programming gave that curiosity a new set of tools. Now, as a junior full-stack developer and graphics designer, I gravitate toward projects where the interface, interaction, and underlying logic all matter.</p><p>I like experimenting, polishing the small things, and building something useful rather than stopping when it merely compiles.</p><div class="about-quote"><span>✳</span> Functional is the baseline. Memorable is the goal.</div></div>
       </div>
     </section>
 
     <section class="section container stack-section" id="stack" aria-labelledby="stack-title">
-      <div class="section-heading reveal"><div><p class="overline overline-purple">03 / MY TOOLBOX</p><h2 id="stack-title">The stuff behind <span class="serif-accent">the scenes.</span></h2></div><p>A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every badge on the shelf.</p></div>
+      <div class="section-heading reveal"><div><p class="overline overline-purple">03 / THE TOOLKIT</p><h2 id="stack-title">The stuff behind <span class="serif-accent">the scenes.</span></h2></div><p>A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every badge on the shelf.</p></div>
       <div class="stack-grid">
         <div class="stack-panel reveal"><div class="stack-icon">⌘</div><h3>Build</h3><p>Software, interactions, and the glue that holds them together.</p><div class="skill-list"><span>C#</span><span>.NET</span><span>WPF</span><span>JavaScript</span><span>HTML / CSS</span><span>React</span><span>Blazor</span><span>SQL</span></div></div>
         <div class="stack-panel reveal"><div class="stack-icon">◈</div><h3>Shape</h3><p>Interfaces should be intuitive, expressive, and a little bit fun.</p><div class="skill-list"><span>UI Design</span><span>Visual Identity</span><span>Motion</span><span>Typography</span><span>Layout</span><span>Blender</span></div></div>
@@ -164,15 +189,32 @@
       </div>
     </section>
 
+<section class="trajectory-section" id="trajectory" aria-labelledby="trajectory-title">
+      <div class="container trajectory-grid">
+        <div class="trajectory-copy reveal">
+          <p class="overline overline-purple">04 / WHAT COMES NEXT</p>
+          <h2 id="trajectory-title">The next <span class="serif-accent">frontier.</span></h2>
+          <p>I'm building a foundation across full-stack engineering and design. The next chapter is Azure, cloud engineering, and cybersecurity, with a focus on understanding how systems are built, secured, and run.</p>
+          <a class="trajectory-link" href="https://learn.microsoft.com/training/azure/" target="_blank" rel="noopener noreferrer">Follow the learning path <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="trajectory-map reveal">
+          <div class="trajectory-line" aria-hidden="true"></div>
+          <div class="trajectory-stop is-current"><div class="trajectory-number">01</div><div><span class="trajectory-state">CURRENT FOCUS</span><h3>Full-stack + visual design</h3><p>Turning good ideas into useful, polished software.</p></div><span class="stop-star">✦</span></div>
+          <div class="trajectory-stop"><div class="trajectory-number">02</div><div><span class="trajectory-state">NEXT DESTINATION</span><h3>Microsoft Azure</h3><p>Cloud infrastructure, services, deployment, and architecture.</p></div><span class="stop-star">✧</span></div>
+          <div class="trajectory-stop"><div class="trajectory-number">03</div><div><span class="trajectory-state">BEYOND THE HORIZON</span><h3>Cybersecurity</h3><p>Defensive security, secure systems, and practical cloud protection.</p></div><span class="stop-star">✧</span></div>
+        </div>
+      </div>
+    </section>
+
     <section class="contact-section" id="contact" aria-labelledby="contact-title">
       <div class="container contact-inner reveal">
-        <p class="overline">04 / KEEP EXPLORING</p><h2 id="contact-title">Got an interesting <span>idea?</span></h2><p>I'm always interested in clever software, unusual design problems, and good builds. Public code and updates live on GitHub. No fake contact forms, no personal details floating around.</p><a class="button button-contact" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
+        <p class="overline">05 / START A CONVERSATION</p><h2 id="contact-title">Have something <span>out of this world?</span></h2><p>I'm always interested in clever software, unusual design problems, and good builds. Public code and updates live on GitHub. No fake contact forms, no personal details floating around.</p><a class="button button-contact" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
         <div class="contact-decoration" aria-hidden="true">✳</div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-inner"><a class="brand footer-brand" href="#top"><img src="mark.svg" alt="" width="26" height="26"><span>otter<span class="brand-point">.</span></span></a><span>Made with curiosity, CSS, and a suspicious number of tiny tweaks.</span><a href="#top">Back to top ↑</a></div></footer>
+  <footer class="site-footer"><div class="container footer-inner"><a class="brand footer-brand" href="#top"><img src="mark.svg" alt="" width="26" height="26"><span>otter<span class="brand-point">.</span></span></a><span>Built one detail at a time, somewhere between code and the cosmos.</span><a href="#top">Back to top ↑</a></div></footer>
 
   <dialog class="project-dialog" id="projectDialog" aria-labelledby="dialogTitle">
     <div class="dialog-top"><p class="overline">PROJECT NOTES / PRIVATE-SAFE OVERVIEW</p><button class="dialog-close" id="dialogClose" type="button" aria-label="Close project details">×</button></div>
