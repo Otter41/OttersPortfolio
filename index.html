@@ -3,212 +3,438 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Otter is a junior full-stack developer and graphics designer building expressive software, immersive interfaces, games, and thoughtful digital experiences.">
-  <meta name="theme-color" content="#050711">
+  <meta name="theme-color" content="#060913">
+  <meta name="description" content="Otter is a junior full-stack developer and graphics designer building creative software, desktop tools, games, and interfaces that feel alive.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Otter | A Universe of Ideas">
-  <meta property="og:description" content="Software, design, and digital experiences from somewhere beyond the ordinary.">
-  <title>Otter | Ideas Have Their Own Gravity</title>
+  <meta property="og:title" content="Otter | Code, Design & Curiosity">
+  <meta property="og:description" content="A personal universe of software, design, and ideas worth building.">
+  <title>Otter | Code, Design & Curiosity</title>
+
   <link rel="icon" type="image/svg+xml" href="mark.svg">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="constellation.css">
-  <script src="script.js" defer></script>
-  <script src="constellation.js?v=2" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=5">
+  <script src="script.js?v=5" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="scroll-progress" aria-hidden="true"></div>
-  <canvas id="starfield" aria-hidden="true"></canvas>
-  <div class="cosmic-vignette" aria-hidden="true"></div>
-  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-  <div class="ambient ambient-one" aria-hidden="true"></div>
-  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <a class="skip-link" href="#work">Skip to projects</a>
+  <canvas id="starfield" class="starfield" aria-hidden="true"></canvas>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
   <header class="site-header" id="top">
-    <div class="container header-inner">
+    <div class="nav-container">
       <a class="brand" href="#top" aria-label="Otter, back to top">
-        <img src="mark.svg" alt="" width="37" height="37">
-        <span>otter<span class="brand-point">.</span></span>
-        <span class="brand-tag">the digital frontier</span>
+        <span class="brand-symbol" aria-hidden="true">✳</span>
+        otter<span class="brand-dot">.</span>
       </a>
-      <button class="menu-toggle" id="menuButton" type="button" aria-controls="siteNav" aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button>
+
       <nav class="site-nav" id="siteNav" aria-label="Main navigation">
-        <a href="#work">Expeditions</a>
+        <a href="#work">Projects</a>
         <a href="#about">About</a>
         <a href="#stack">Toolkit</a>
-        <a href="#trajectory">Next frontier</a>
-        <a href="#contact">Contact</a>
+        <a href="#next">What's next</a>
       </nav>
-      <button class="theme-switch" id="themeButton" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <span class="theme-switch-orb" aria-hidden="true"></span><span>Switch atmosphere</span>
+
+      <a class="nav-contact" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">
+        GitHub <span aria-hidden="true">↗</span>
+      </a>
+
+      <button class="menu-toggle" type="button" id="menuButton" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
       </button>
     </div>
   </header>
 
-  <main id="main">
-    <section class="hero constellation-hero container" aria-labelledby="hero-heading">
-      <div class="hero-copy">
-        <p class="overline hero-overline"><span class="signal-dot"></span> INDEPENDENT BY NATURE / DESIGN × DEVELOPMENT</p>
-        <h1 id="hero-heading">Ideas have<br>their own<br><em>gravity.</em></h1>
-        <p class="hero-intro">I'm Otter, a junior full-stack developer and graphics designer. I make software, interfaces, and digital experiences that feel a little more alive.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#work">Explore the work <span aria-hidden="true">↗</span></a>
-          <a class="button button-quiet" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  <main>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-nebula" aria-hidden="true"></div>
+      <div class="hero-container">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot"></span> THE PERSONAL UNIVERSE OF OTTER</p>
+
+          <h1 id="heroTitle">
+            Making things<br>
+            <em>feel alive.</em>
+          </h1>
+
+          <p class="hero-description">
+            I'm Otter, a junior full-stack developer and graphics designer.
+            I build desktop tools, games, and interfaces where thoughtful
+            design meets code that actually does something.
+          </p>
+
+          <div class="hero-links">
+            <a class="primary-link" href="#work">
+              Explore my work <span aria-hidden="true">↗</span>
+            </a>
+            <a class="text-link" href="#about">
+              A bit about me <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <p class="hero-role">JUNIOR FULL-STACK DEVELOPER <span>/</span> GRAPHICS DESIGNER</p>
         </div>
-        <div class="hero-meta"><span class="meta-asterisk">✳</span><span>JUNIOR FULL-STACK DEVELOPER <span class="role-divider">/</span> GRAPHICS DESIGNER</span></div>
+
+        <div class="hero-art" id="heroArt">
+          <div class="art-aura" aria-hidden="true"></div>
+          <div class="art-orbit art-orbit-one" aria-hidden="true"></div>
+          <div class="art-orbit art-orbit-two" aria-hidden="true"></div>
+
+          <svg id="otterArt" class="otter-art" viewBox="0 0 1000 640" role="img" aria-labelledby="otterArtTitle">
+            <title id="otterArtTitle">Stars forming a graceful otter swimming through a cosmic sky</title>
+            <defs>
+              <linearGradient id="otterFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#758bd1" stop-opacity=".14"></stop>
+                <stop offset="50%" stop-color="#c99fd7" stop-opacity=".23"></stop>
+                <stop offset="100%" stop-color="#59c7d6" stop-opacity=".06"></stop>
+              </linearGradient>
+              <linearGradient id="otterStroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#a0baff"></stop>
+                <stop offset="52%" stop-color="#d9b7fc"></stop>
+                <stop offset="100%" stop-color="#87eeee"></stop>
+              </linearGradient>
+              <radialGradient id="otterHalo">
+                <stop offset="0%" stop-color="#6c54bc" stop-opacity=".24"></stop>
+                <stop offset="48%" stop-color="#3d6caa" stop-opacity=".11"></stop>
+                <stop offset="100%" stop-color="#07101d" stop-opacity="0"></stop>
+              </radialGradient>
+              <clipPath id="otterClip">
+                <path d="M 104 387 C 154 370 208 377 274 385 C 331 343 367 300 441 271 C 493 249 552 210 615 216 C 627 201 643 186 659 181 C 677 174 685 181 687 196 C 724 172 763 173 796 190 C 811 177 824 183 833 199 C 852 207 865 220 883 242 C 898 248 920 256 920 270 Q 920 284 901 287 C 880 292 862 290 840 298 C 796 317 764 345 734 379 C 706 413 647 439 593 451 C 532 469 473 473 415 461 C 365 450 321 446 294 431 C 233 421 175 412 104 387 Z"></path>
+              </clipPath>
+            </defs>
+
+            <ellipse cx="520" cy="330" rx="465" ry="285" fill="url(#otterHalo)" aria-hidden="true"></ellipse>
+
+            <g class="otter-silhouette">
+              <path
+                id="otterOutline"
+                class="otter-outline"
+                d="M 104 387 C 154 370 208 377 274 385 C 331 343 367 300 441 271 C 493 249 552 210 615 216 C 627 201 643 186 659 181 C 677 174 685 181 687 196 C 724 172 763 173 796 190 C 811 177 824 183 833 199 C 852 207 865 220 883 242 C 898 248 920 256 920 270 Q 920 284 901 287 C 880 292 862 290 840 298 C 796 317 764 345 734 379 C 706 413 647 439 593 451 C 532 469 473 473 415 461 C 365 450 321 446 294 431 C 233 421 175 412 104 387 Z"
+                fill="url(#otterFill)"
+                stroke="url(#otterStroke)"
+                stroke-width="1.7"
+              ></path>
+              <path class="otter-detail" d="M 646 389 C 636 419 627 461 639 483 C 656 503 677 506 691 493 C 700 479 687 467 686 453 C 689 426 704 411 716 394"></path>
+              <path class="otter-detail" d="M 385 447 C 370 469 352 487 343 502 C 340 518 365 521 381 509 C 393 496 406 478 422 460"></path>
+              <path class="otter-detail otter-whiskers" d="M 873 267 L 952 247 M 869 276 L 970 278 M 863 287 L 940 312"></path>
+              <path class="otter-detail" d="M 755 239 Q 766 227 780 238 M 859 275 Q 876 279 890 275"></path>
+              <path class="otter-detail otter-inner" d="M 463 309 Q 542 280 617 272 M 485 407 Q 573 432 640 395 M 312 395 Q 430 356 506 327"></path>
+            </g>
+
+            <g id="otterDust" clip-path="url(#otterClip)" aria-hidden="true"></g>
+            <g id="otterStars" aria-hidden="true"></g>
+            <circle class="feature-star" cx="784" cy="236" r="3.3"></circle>
+            <circle class="feature-star" cx="915" cy="269" r="3.2"></circle>
+          </svg>
+
+          <span class="art-caption art-caption-top">AN IDEA WRITTEN IN THE STARS</span>
+          <span class="art-caption art-caption-bottom">A LITTLE WONDER GOES A LONG WAY</span>
+        </div>
       </div>
-      <div class="hero-visual constellation-panel" aria-label="A star map showing an otter constellation">
-        <div class="constellation-halo" aria-hidden="true"></div>
-        <div class="constellation-grid" aria-hidden="true"></div>
-        <canvas id="otterConstellation" role="img" aria-label="Stars drift together and connect to form Lutra, an otter with round ears, whiskers, paws, and a curling tail.">Stars gather into the shape of an otter.</canvas>
-        <span class="star-coordinate star-coordinate-top" aria-hidden="true">51° 28′ 40″ N / 00.01</span>
-        <div class="constellation-label"><span class="constellation-mark">✦</span><span><strong>LUTRA</strong><small>THE MAKER / CONSTELLATION 001</small></span></div>
-        <button id="replayConstellation" class="replay-constellation" type="button"><span aria-hidden="true">↺</span> Align the stars</button>
-        <span class="star-coordinate star-coordinate-bottom" aria-hidden="true">AN IMAGINARY CONSTELLATION</span>
-        <span id="constellationStatus" class="visually-hidden" role="status" aria-live="polite"></span>
+
+      <div class="hero-foot">
+        <span>DESIGN × DEVELOPMENT × CURIOSITY</span>
+        <a href="#work">SCROLL TO DISCOVER <span aria-hidden="true">↓</span></a>
       </div>
-      <div class="hero-bottom"><span><i></i> A PERSONAL UNIVERSE OF IDEAS</span><a href="#work">SCROLL TO DISCOVER <span aria-hidden="true">↓</span></a></div>
     </section>
 
-    <section class="manifesto-strip" aria-label="Creative approach">
-      <div class="container manifesto-inner">
-        <p>Somewhere between <em>how it looks</em> and <em>how it works</em> is where the interesting things happen.</p>
-        <span>DESIGN IS THE JOURNEY. CODE MAKES IT REAL.</span>
+    <section class="statement-section" aria-labelledby="statementTitle">
+      <div class="section-container statement-grid">
+        <p class="section-label">01 / A LITTLE CONTEXT</p>
+        <h2 id="statementTitle">
+          Somewhere between <em>how it looks</em> and
+          <em>how it works</em> is where the interesting stuff happens.
+        </h2>
       </div>
     </section>
 
-<section class="section container work-section" id="work" aria-labelledby="work-title">
-      <div class="section-heading reveal">
-        <div><p class="overline overline-purple">01 / PROJECT ARCHIVE</p><h2 id="work-title">Selected <span class="serif-accent">work.</span></h2></div>
-        <p>Desktop software, interactive interfaces, experiments, and little worlds. Each one is another dot on the map.</p>
-      </div>
-      <div class="filter-bar reveal" role="group" aria-label="Filter projects">
-        <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All projects <span>08</span></button>
-        <button class="filter-chip" type="button" data-filter="desktop" aria-pressed="false">Desktop apps</button>
-        <button class="filter-chip" type="button" data-filter="mobile" aria-pressed="false">Mobile</button>
-        <button class="filter-chip" type="button" data-filter="game" aria-pressed="false">Games</button>
-        <button class="filter-chip" type="button" data-filter="learning" aria-pressed="false">Learning builds</button>
-      </div>
-      <div class="project-grid" id="projectGrid">
-        <article class="project-card project-featured reveal" data-category="desktop" data-index="01">
-          <div class="project-art art-chat" aria-hidden="true">
-            <div class="art-noise"></div>
-            <div class="chat-window">
-              <div class="chat-head"><span class="chat-symbol">◉</span><span>OtterLink</span><small>● LOCAL NETWORK</small></div>
-              <div class="chat-area"><div class="chat-bubble chat-left">Connected nearby.</div><div class="chat-bubble chat-right">No cloud required. ✳</div><div class="chat-bubble chat-left chat-smaller"><i></i><i></i><i></i></div></div>
-              <div class="chat-compose"><span>Type a message…</span><b>↗</b></div>
+    <section class="work-section" id="work" aria-labelledby="workTitle">
+      <div class="section-container">
+        <div class="section-heading reveal">
+          <p class="section-label">02 / SELECTED WORK</p>
+          <h2 id="workTitle">A few things <em>I've built.</em></h2>
+          <p>
+            Desktop software, little worlds, and experiments that started as
+            ideas and became something real. Some are private or still growing,
+            so the descriptions tell you what's what.
+          </p>
+        </div>
+
+        <div class="feature-projects">
+          <article class="feature-project reveal">
+            <div class="feature-visual feature-chat" aria-hidden="true">
+              <div class="feature-orb"></div>
+              <div class="chat-window">
+                <div class="chat-title"><span class="chat-status"></span> OTTERLINK <span>LOCAL / CONNECTED</span></div>
+                <div class="chat-message left">Hey, you there?</div>
+                <div class="chat-message right">Yep. No internet needed.</div>
+                <div class="chat-message left">Nice. ✳</div>
+                <div class="chat-input">Send a message <span>↗</span></div>
+              </div>
+              <span class="feature-index">001 / DESKTOP</span>
             </div>
-            <span class="art-corner">01 / SOFTWARE</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>FEATURED BUILD</span><span>PRIVATE REPO</span></div><h3>OtterLink <span class="title-arrow">↗</span></h3><p>A local-first LAN messenger with a custom WPF interface, device pairing, and temporary conversations. A desktop experiment in usability and network communication.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>.NET / WPF</span><span>Networking</span></div><button class="details-button" data-project="otterlink" type="button" aria-label="Read about OtterLink">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
 
-        <article class="project-card reveal" data-category="desktop" data-index="02">
-          <div class="project-art art-music" aria-hidden="true">
-            <div class="vinyl-ring vinyl-outer"><div class="vinyl-ring vinyl-inner"><div class="vinyl-center">R</div></div></div>
-            <div class="music-player"><small>RHYTHMABOX / NOW PLAYING</small><div class="music-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="music-controls"><span>◂◂</span><span>Ⅱ</span><span>▸▸</span></div></div>
-            <span class="art-corner">02 / MULTIMEDIA</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>PERSONAL PROJECT</span><span>PRIVATE BUILD</span></div><h3>RhythmaBox <span class="title-arrow">↗</span></h3><p>A desktop music player with custom visualizers, themes, and a playback-focused interface. Equal parts engineering and visual experimentation.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>WinForms</span><span>SkiaSharp</span></div><button class="details-button" data-project="rhythmabox" type="button" aria-label="Read about RhythmaBox">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
+            <div class="feature-copy">
+              <p class="project-type">DESKTOP APPLICATION / PRIVATE REPOSITORY</p>
+              <h3>OtterLink <span aria-hidden="true">↗</span></h3>
+              <p>
+                A local-first LAN messenger with a custom WPF interface, device
+                pairing, and temporary conversations. A desktop experiment in
+                usability and network communication.
+              </p>
+              <div class="project-footer">
+                <div class="project-tags"><span>C#</span><span>.NET / WPF</span><span>Networking</span></div>
+                <button class="project-details" type="button" data-project="otterlink">
+                  Explore the build <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+          </article>
 
-        <article class="project-card reveal" data-category="desktop" data-index="03">
-          <div class="project-art art-telemetry" aria-hidden="true">
-            <div class="telemetry-panel"><div class="telemetry-head"><span>OTTERSAPEX</span><span>◉ LIVE DATA</span></div><div class="telemetry-numbers"><div><small>SESSION</small><strong>PUSH LAP</strong></div><div><small>DELTA</small><strong>−0.243</strong></div></div><svg class="telemetry-chart" viewBox="0 0 320 95" preserveAspectRatio="none"><path class="chart-grid" d="M0 20H320M0 50H320M0 80H320"></path><path class="chart-glow" d="M0 69L25 64L44 76L68 31L87 53L112 34L140 40L165 10L195 47L224 37L248 53L274 17L296 24L320 10"></path></svg><div class="telemetry-foot">RACE TELEMETRY <span>◌ 60 FPS</span></div></div>
-            <span class="art-corner">03 / MOTORSPORT</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>PERSONAL TOOL</span><span>PRIVATE BUILD</span></div><h3>OttersApex <span class="title-arrow">↗</span></h3><p>An offline F1 telemetry desktop concept centered on live data, configurable connections, and visual feedback for racing sessions.</p><div class="project-bottom"><div class="tags"><span>Desktop</span><span>F1 UDP</span><span>Data UI</span></div><button class="details-button" data-project="ottersapex" type="button" aria-label="Read about OttersApex">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
+          <article class="feature-project reveal">
+            <div class="feature-visual feature-mobile" aria-hidden="true">
+              <div class="mobile-glow"></div>
+              <div class="phone">
+                <div class="phone-island"></div>
+                <div class="phone-time">09:41</div>
+                <div class="phone-day">MONDAY / NOVEMBER</div>
+                <div class="phone-weather">✧ &nbsp; A better place to begin.</div>
+                <div class="phone-widget first"></div>
+                <div class="phone-widget second"></div>
+                <div class="phone-dock"><i></i><i></i><i></i><i></i></div>
+              </div>
+              <span class="feature-index">002 / ANDROID</span>
+            </div>
 
-        <article class="project-card reveal" data-category="game" data-index="04">
-          <div class="project-art art-game" aria-hidden="true">
-            <div class="game-sky"><span class="game-star star-a">✦</span><span class="game-star star-b">✧</span><span class="game-star star-c">✳</span><div class="game-message">TOTALLY SAFE<span>™</span></div><div class="game-platform platform-one"></div><div class="game-platform platform-two"></div><div class="game-platform platform-three"></div><div class="game-character"><span></span><span></span></div><div class="game-spike spike-one"></div><div class="game-spike spike-two"></div><div class="game-spike spike-three"></div></div>
-            <span class="art-corner">04 / UNITY</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>GAME PROJECT</span><span>IN DEVELOPMENT</span></div><h3>Totally Safe <span class="title-arrow">↗</span></h3><p>A 2D platformer that turns expectations against the player. Every trap is a design puzzle, and every failure should teach you something.</p><div class="project-bottom"><div class="tags"><span>Unity</span><span>C#</span><span>Game Design</span></div><button class="details-button" data-project="totallysafe" type="button" aria-label="Read about Totally Safe">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
-
-        <article class="project-card reveal" data-category="learning" data-index="05">
-          <div class="project-art art-library" aria-hidden="true">
-            <div class="code-window"><div class="code-title"><span><i></i><i></i><i></i></span> library.cs</div><div class="code-lines"><span class="code-purple">public</span> <span class="code-blue">class</span> Library<br>{<br>&nbsp; <span class="code-blue">AddBook</span>(book);<br>&nbsp; <span class="code-blue">FindBook</span>(title);<br>&nbsp; <span class="code-blue">BorrowBook</span>(id);<br>&nbsp; <span class="code-green">// stay organized</span><br>}</div></div>
-            <span class="art-corner">05 / FOUNDATIONS</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>C# FUNDAMENTALS</span></div><h3>Library Management System <span class="title-arrow">↗</span></h3><p>A console-based library manager with book records, searching, borrowing and returning, validation, and borrow limits.</p><div class="project-bottom"><div class="tags"><span>C#</span><span>OOP</span><span>Console</span></div><button class="details-button" data-project="library" type="button" aria-label="Read about Library Management System">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
-
-        <article class="project-card reveal" data-category="learning" data-index="06">
-          <div class="project-art art-events" aria-hidden="true">
-            <div class="events-panel"><div class="events-overline">EVENT TRACKER / BLAZOR</div><div class="events-headline">Upcoming sessions<span>↗</span></div><div class="events-list"><div class="event-row"><b>14</b><span>Register attendees<small>Session · 10:00</small></span><em>OPEN</em></div><div class="event-row"><b>18</b><span>Attendance tracking<small>Workshop · 14:30</small></span><em>VIEW</em></div></div></div>
-            <span class="art-corner">06 / WEB APPLICATION</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>WEB APP</span></div><h3>Event &amp; Attendance Tracker <span class="title-arrow">↗</span></h3><p>A Blazor learning build exploring event cards, registration validation, routing, session state, and attendance tracking.</p><div class="project-bottom"><div class="tags"><span>Blazor</span><span>C#</span><span>Forms</span></div><button class="details-button" data-project="events" type="button" aria-label="Read about Event and Attendance Tracker">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
-        <article class="project-card project-nebula reveal" data-category="mobile" data-index="07">
-          <div class="project-art art-mobile" aria-hidden="true">
-            <div class="mobile-aura"></div>
-            <div class="mobile-device"><div class="mobile-island"></div><div class="mobile-clock">09:41</div><div class="mobile-weather">✳ &nbsp; A whole new home</div><div class="mobile-widget one"></div><div class="mobile-widget two"></div><div class="mobile-dock"><i></i><i></i><i></i><i></i></div></div>
-            <span class="art-corner">07 / ANDROID EXPERIENCE</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>PERSONAL PROJECT</span><span>IN DEVELOPMENT</span></div><h3>OtteraUI <span class="title-arrow">↗</span></h3><p>A private Android launcher exploring fluid glass interfaces, expressive motion, customizable widgets, and a home screen that feels genuinely personal.</p><div class="project-bottom"><div class="tags"><span>Kotlin</span><span>Compose</span><span>Android</span></div><button class="details-button" data-project="otteraui" type="button" aria-label="Read about OtteraUI">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
-
-        <article class="project-card reveal" data-category="learning" data-index="08">
-          <div class="project-art art-inventory" aria-hidden="true">
-            <div class="inventory-window"><div class="inventory-top">INVENTORYHUB <span>● CONNECTED</span></div><div class="inventory-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="inventory-rows"><span><b>ITEM 001</b><em>IN STOCK</em></span><span><b>ITEM 002</b><em>UPDATED</em></span><span><b>ITEM 003</b><em>READY</em></span></div></div>
-            <span class="art-corner">08 / FULL-STACK STUDY</span>
-          </div>
-          <div class="project-info"><div class="project-kicker"><span>COURSE PROJECT</span><span>PUBLIC REPO</span></div><h3>InventoryHub <span class="title-arrow">↗</span></h3><p>A practical Blazor and .NET integration build connecting the interface to real CRUD endpoints, with the full request-to-response flow tested end to end.</p><div class="project-bottom"><div class="tags"><span>Blazor</span><span>.NET</span><span>REST API</span></div><button class="details-button" data-project="inventoryhub" type="button" aria-label="Read about InventoryHub">Details <span aria-hidden="true">↗</span></button></div></div>
-        </article>
-      </div>
-      <p id="filterStatus" class="visually-hidden" role="status" aria-live="polite"></p>
-      <div class="work-outro reveal"><p>Some experiments live privately, but the curiosity isn't classified.</p><a href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Browse my public GitHub <span aria-hidden="true">↗</span></a></div>
-    </section>
-
-    <section class="about-band" id="about" aria-labelledby="about-title">
-      <div class="container about-grid">
-        <div class="about-visual reveal"><div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-core">O<span>✳</span></div><div class="orbit-label label-design">DESIGN</div><div class="orbit-label label-code">CODE</div><div class="orbit-label label-detail">DETAILS</div></div>
-        <div class="about-copy reveal"><div class="about-role"><span class="signal-dot"></span> JUNIOR FULL-STACK DEVELOPER &amp; GRAPHICS DESIGNER</div><p class="overline overline-purple">02 / BEYOND THE WORK</p><h2 id="about-title">I live somewhere between <span class="serif-accent">how it works</span> and <span class="serif-accent">how it feels.</span></h2><p>My starting point was graphic design. Programming gave that curiosity a new set of tools. Now, as a junior full-stack developer and graphics designer, I gravitate toward projects where the interface, interaction, and underlying logic all matter.</p><p>I like experimenting, polishing the small things, and building something useful rather than stopping when it merely compiles.</p><div class="about-quote"><span>✳</span> Functional is the baseline. Memorable is the goal.</div></div>
-      </div>
-    </section>
-
-    <section class="section container stack-section" id="stack" aria-labelledby="stack-title">
-      <div class="section-heading reveal"><div><p class="overline overline-purple">03 / TOOLKIT</p><h2 id="stack-title">The stuff behind <span class="serif-accent">the scenes.</span></h2></div><p>A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every badge on the shelf.</p></div>
-      <div class="stack-grid">
-        <div class="stack-panel reveal"><div class="stack-icon">⌘</div><h3>Build</h3><p>Software, interactions, and the glue that holds them together.</p><div class="skill-list"><span>C#</span><span>.NET</span><span>WPF</span><span>JavaScript</span><span>HTML / CSS</span><span>React</span><span>Blazor</span><span>SQL</span></div></div>
-        <div class="stack-panel reveal"><div class="stack-icon">◈</div><h3>Shape</h3><p>Interfaces should be intuitive, expressive, and a little bit fun.</p><div class="skill-list"><span>UI Design</span><span>Visual Identity</span><span>Motion</span><span>Typography</span><span>Layout</span><span>Blender</span></div></div>
-        <div class="stack-panel reveal"><div class="stack-icon">↗</div><h3>Explore</h3><p>Curiosity doesn't respect categories. Neither do my side projects.</p><div class="skill-list"><span>Unity</span><span>Networking</span><span>Telemetry</span><span>Cloud fundamentals</span><span>Cybersecurity learning</span></div></div>
-      </div>
-    </section>
-
-<section class="trajectory-section" id="trajectory" aria-labelledby="trajectory-title">
-      <div class="container trajectory-grid">
-        <div class="trajectory-copy reveal">
-          <p class="overline overline-purple">04 / THE NEXT CHAPTER</p>
-          <h2 id="trajectory-title">The next <span class="serif-accent">frontier.</span></h2>
-          <p>I'm building a foundation across full-stack engineering and design. The next chapter is Azure, cloud engineering, and cybersecurity, with a focus on understanding how systems are built, secured, and run.</p>
-          <a class="trajectory-link" href="https://learn.microsoft.com/training/azure/" target="_blank" rel="noopener noreferrer">Follow the learning path <span aria-hidden="true">↗</span></a>
+            <div class="feature-copy">
+              <p class="project-type">PERSONAL PROJECT / IN DEVELOPMENT</p>
+              <h3>OtteraUI <span aria-hidden="true">↗</span></h3>
+              <p>
+                A private Android launcher exploring fluid glass interfaces,
+                expressive motion, customizable widgets, and a home screen
+                that feels genuinely personal.
+              </p>
+              <div class="project-footer">
+                <div class="project-tags"><span>Kotlin</span><span>Compose</span><span>Android</span></div>
+                <button class="project-details" type="button" data-project="otteraui">
+                  Explore the build <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+          </article>
         </div>
-        <div class="trajectory-map reveal">
-          <div class="trajectory-line" aria-hidden="true"></div>
-          <div class="trajectory-stop is-current"><div class="trajectory-number">01</div><div><span class="trajectory-state">CURRENT FOCUS</span><h3>Full-stack + visual design</h3><p>Turning good ideas into useful, polished software.</p></div><span class="stop-star">✦</span></div>
-          <div class="trajectory-stop"><div class="trajectory-number">02</div><div><span class="trajectory-state">NEXT DESTINATION</span><h3>Cybersecurity foundations</h3><p>Defensive security, threat detection, and the foundations of protecting systems.</p></div><span class="stop-star">✧</span></div>
-          <div class="trajectory-stop"><div class="trajectory-number">03</div><div><span class="trajectory-state">BEYOND THE HORIZON</span><h3>Microsoft Azure + cloud security</h3><p>Cloud infrastructure, architecture, and securing the environments that run our software.</p></div><span class="stop-star">✧</span></div>
+
+        <div class="archive-heading reveal">
+          <h3>More from the workshop</h3>
+          <span>003–008 / EXPERIMENTS & LEARNING</span>
+        </div>
+
+        <div class="archive-list">
+          <article class="archive-project reveal">
+            <span class="archive-number">003</span>
+            <div>
+              <p class="project-type">DESKTOP / MULTIMEDIA</p>
+              <h4>RhythmaBox</h4>
+              <p>A desktop music player with custom visualizers, themes, and a playback-focused interface. Equal parts engineering and visual experimentation.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="rhythmabox" aria-label="Details about RhythmaBox">↗</button>
+          </article>
+
+          <article class="archive-project reveal">
+            <span class="archive-number">004</span>
+            <div>
+              <p class="project-type">MOTORSPORT / TELEMETRY</p>
+              <h4>OttersApex</h4>
+              <p>An offline F1 telemetry desktop concept centered on live data, configurable connections, and visual feedback for racing sessions.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="ottersapex" aria-label="Details about OttersApex">↗</button>
+          </article>
+
+          <article class="archive-project reveal">
+            <span class="archive-number">005</span>
+            <div>
+              <p class="project-type">GAME / UNITY</p>
+              <h4>Totally Safe</h4>
+              <p>A 2D platformer that turns expectations against the player. Every trap is a design puzzle, and every failure should teach you something.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="totallysafe" aria-label="Details about Totally Safe">↗</button>
+          </article>
+
+          <article class="archive-project reveal">
+            <span class="archive-number">006</span>
+            <div>
+              <p class="project-type">FOUNDATIONS / C#</p>
+              <h4>Library Management System</h4>
+              <p>A console-based library manager with book records, searching, borrowing and returning, validation, and borrow limits.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="library" aria-label="Details about Library Management System">↗</button>
+          </article>
+
+          <article class="archive-project reveal">
+            <span class="archive-number">007</span>
+            <div>
+              <p class="project-type">WEB / BLAZOR</p>
+              <h4>Event &amp; Attendance Tracker</h4>
+              <p>A Blazor learning build exploring event cards, registration validation, routing, session state, and attendance tracking.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="events" aria-label="Details about Event and Attendance Tracker">↗</button>
+          </article>
+
+          <article class="archive-project reveal">
+            <span class="archive-number">008</span>
+            <div>
+              <p class="project-type">WEB / FULL-STACK</p>
+              <h4>InventoryHub</h4>
+              <p>A practical Blazor and .NET integration build connecting the interface to real CRUD endpoints, with the full request-to-response flow tested end to end.</p>
+            </div>
+            <button class="archive-link" type="button" data-project="inventoryhub" aria-label="Details about InventoryHub">↗</button>
+          </article>
+        </div>
+
+        <a class="archive-more" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">
+          Find more experiments on GitHub <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="about-section" id="about" aria-labelledby="aboutTitle">
+      <div class="section-container about-layout">
+        <p class="section-label reveal">03 / THE PERSON BEHIND IT</p>
+        <div class="about-copy reveal">
+          <h2 id="aboutTitle">
+            Part designer.<br>
+            Part developer.<br>
+            <em>Fully curious.</em>
+          </h2>
+          <p>
+            My starting point was graphic design. Programming gave that curiosity
+            a new set of tools. Now, as a junior full-stack developer and graphics
+            designer, I gravitate toward projects where the interface, interaction,
+            and underlying logic all matter.
+          </p>
+          <p>
+            I like experimenting, polishing the little things, and building
+            something useful rather than stopping when it merely compiles.
+            Functional is the baseline. Memorable is the goal.
+          </p>
+          <span class="about-signature">DESIGN THAT WORKS / CODE THAT FEELS RIGHT</span>
         </div>
       </div>
     </section>
 
-    <section class="contact-section" id="contact" aria-labelledby="contact-title">
-      <div class="container contact-inner reveal">
-        <p class="overline">05 / REACH OUT</p><h2 id="contact-title">Something good <span>starts here.</span></h2><p>I'm always interested in clever software, unusual design problems, and good builds. Public code and updates live on GitHub. No fake contact forms, no personal details floating around.</p><a class="button button-contact" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
-        <div class="contact-decoration" aria-hidden="true">✳</div>
+    <section class="stack-section" id="stack" aria-labelledby="stackTitle">
+      <div class="section-container">
+        <div class="section-heading reveal">
+          <p class="section-label">04 / WHAT I WORK WITH</p>
+          <h2 id="stackTitle">Tools of <em>the trade.</em></h2>
+          <p>A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every tool in the box.</p>
+        </div>
+
+        <div class="skills-grid">
+          <article class="skill-column reveal">
+            <span class="skill-icon">01 / BUILD</span>
+            <h3>Development</h3>
+            <p>The logic, applications, and connections behind the interface.</p>
+            <div class="skill-tags">
+              <span>C#</span><span>.NET</span><span>WPF</span>
+              <span>HTML / CSS</span><span>JavaScript</span><span>React</span>
+              <span>Blazor</span><span>SQL</span>
+            </div>
+          </article>
+
+          <article class="skill-column reveal">
+            <span class="skill-icon">02 / SHAPE</span>
+            <h3>Visual design</h3>
+            <p>Making ideas clearer, more intuitive, and worth looking at twice.</p>
+            <div class="skill-tags">
+              <span>UI Design</span><span>Visual Identity</span><span>Motion</span>
+              <span>Typography</span><span>Layout</span><span>Blender</span>
+            </div>
+          </article>
+
+          <article class="skill-column reveal">
+            <span class="skill-icon">03 / EXPLORE</span>
+            <h3>Experiments</h3>
+            <p>A little bit of everything that keeps curiosity moving.</p>
+            <div class="skill-tags">
+              <span>Unity</span><span>Networking</span><span>Telemetry</span>
+              <span>Cloud Fundamentals</span><span>Cybersecurity Learning</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="next-section" id="next" aria-labelledby="nextTitle">
+      <div class="section-container next-layout">
+        <div class="next-copy reveal">
+          <p class="section-label">05 / THE NEXT CHAPTER</p>
+          <h2 id="nextTitle">The journey<br><em>keeps going.</em></h2>
+          <p>
+            Full-stack engineering and design are the foundation.
+            Next I'm building my cybersecurity knowledge, followed by
+            Microsoft Azure and cloud security. I want to understand
+            how systems are built, protected, and run.
+          </p>
+        </div>
+
+        <div class="journey reveal">
+          <div class="journey-step current">
+            <span class="journey-number">01</span>
+            <div><span class="journey-state">NOW</span><h3>Full-stack &amp; design</h3><p>Building useful, considered software.</p></div>
+            <span class="journey-star">✦</span>
+          </div>
+          <div class="journey-step">
+            <span class="journey-number">02</span>
+            <div><span class="journey-state">NEXT</span><h3>Cybersecurity foundations</h3><p>Defensive skills, threat detection, secure systems.</p></div>
+            <span class="journey-star">✧</span>
+          </div>
+          <div class="journey-step">
+            <span class="journey-number">03</span>
+            <div><span class="journey-state">ON THE HORIZON</span><h3>Microsoft Azure &amp; cloud security</h3><p>Cloud engineering, infrastructure, and protection.</p></div>
+            <span class="journey-star">✧</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact" aria-labelledby="contactTitle">
+      <div class="contact-glow" aria-hidden="true"></div>
+      <div class="section-container contact-inner reveal">
+        <p class="section-label">06 / SAY HELLO</p>
+        <h2 id="contactTitle">Let's make something<br><em>worth remembering.</em></h2>
+        <p>Into interesting software, unusual interfaces, and building things that don't look like everything else? So am I.</p>
+        <a class="primary-link" href="https://github.com/Otter41" target="_blank" rel="noopener noreferrer">
+          Find me on GitHub <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-inner"><a class="brand footer-brand" href="#top"><img src="mark.svg" alt="" width="26" height="26"><span>otter<span class="brand-point">.</span></span></a><span>Built one detail at a time, somewhere between code and the cosmos.</span><a href="#top">Back to top ↑</a></div></footer>
+  <footer class="site-footer">
+    <div class="section-container footer-inner">
+      <a class="brand" href="#top">otter<span class="brand-dot">.</span></a>
+      <span>Made with curiosity and a suspicious amount of attention to detail.</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
 
   <dialog class="project-dialog" id="projectDialog" aria-labelledby="dialogTitle">
-    <div class="dialog-top"><p class="overline">PROJECT NOTES / PRIVATE-SAFE OVERVIEW</p><button class="dialog-close" id="dialogClose" type="button" aria-label="Close project details">×</button></div>
-    <div class="dialog-body"><p class="dialog-category" id="dialogCategory"></p><h2 id="dialogTitle"></h2><p id="dialogDescription"></p><h3>What went into it</h3><ul id="dialogPoints"></ul><div class="dialog-tags" id="dialogTags"></div><p class="dialog-disclaimer">These are summaries of personal and learning projects, not links to private source code or claims of production deployment.</p></div>
+    <div class="dialog-header">
+      <span class="section-label">A CLOSER LOOK</span>
+      <button class="dialog-close" id="dialogClose" type="button" aria-label="Close details">×</button>
+    </div>
+    <div class="dialog-content">
+      <span class="dialog-category" id="dialogCategory"></span>
+      <h2 id="dialogTitle"></h2>
+      <p id="dialogDescription"></p>
+      <h3>What went into it</h3>
+      <ul id="dialogPoints"></ul>
+      <div class="dialog-tags" id="dialogTags"></div>
+      <p class="dialog-note">Some builds are private, experimental, or part of my learning journey. Descriptions are intentionally limited to what I can share.</p>
+    </div>
   </dialog>
 </body>
 </html>
