@@ -606,7 +606,7 @@ button:focus-visible {
 
 .feature-projects {
   display: grid;
-  gap: 74px;
+  gap: 64px;
 }
 
 .feature-project {
@@ -617,18 +617,18 @@ button:focus-visible {
 }
 
 .feature-project:nth-child(even) {
-  grid-template-columns: 0.94fr 1.06fr;
+  grid-template-columns: 1.06fr 0.94fr;
 }
 
 .feature-project:nth-child(even) .feature-visual {
-  order: 2;
+  order: 0;
 }
 
 .feature-visual {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 368px;
+  min-height: 352px;
   overflow: hidden;
   border: 1px solid rgba(174, 193, 237, 0.14);
   border-radius: 14px;
@@ -670,12 +670,12 @@ button:focus-visible {
   border-radius: 14px;
   background: #101b33ed;
   box-shadow: 0 22px 60px rgba(2, 5, 17, 0.58);
-  transform: rotate(-7deg);
+  transform: rotate(-3deg);
   transition: transform 0.4s ease;
 }
 
 .feature-visual:hover .chat-window {
-  transform: rotate(-3deg) translateY(-6px);
+  transform: rotate(-1deg) translateY(-4px);
 }
 
 .chat-title {
@@ -762,12 +762,12 @@ button:focus-visible {
   background:
     radial-gradient(ellipse at 50% 27%, #738ad1 0%, #454f9b 37%, #192649 100%);
   box-shadow: 0 20px 60px rgba(4, 7, 22, 0.55), 0 0 0 2px #b1bceb59;
-  transform: rotate(10deg) translateY(20px);
+  transform: rotate(5deg) translateY(12px);
   transition: transform 0.4s ease;
 }
 
 .feature-visual:hover .phone {
-  transform: rotate(6deg) translateY(9px);
+  transform: rotate(3deg) translateY(5px);
 }
 
 .phone-island {
@@ -855,7 +855,7 @@ button:focus-visible {
 .feature-copy h3 {
   margin: 22px 0 26px;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(46px, 5vw, 79px);
+  font-size: clamp(44px, 4.3vw, 67px);
   font-weight: 500;
   letter-spacing: -0.065em;
   line-height: 1.1;
@@ -870,8 +870,8 @@ button:focus-visible {
 .feature-copy > p:not(.project-type) {
   max-width: 480px;
   color: var(--muted);
-  font-size: 15px;
-  line-height: 1.95;
+  font-size: 14px;
+  line-height: 1.9;
 }
 
 .project-footer {
