@@ -96,7 +96,6 @@
   let centerY = 0;
   let particles = [];
   let sky = [];
-  let ready = false;
   let animationId = null;
   let startedAt = null;
   let lastFrame = 0;
@@ -113,7 +112,10 @@
   }
 
   function addParticle(x, y, size, glow, kind = 'body') {
-    const colorIndex = Math.floor(Math.random() * particleColors.length);
+    // The warm stars are accents, not the whole palette.
+    const warm = Math.random() < 0.16;
+    const choices = warm ? [3, 4] : [0, 1, 2, 5];
+    const colorIndex = choices[Math.floor(Math.random() * choices.length)];
     const color = particleColors[colorIndex];
     const alpha = randomBetween(0.42, 0.97);
 
@@ -332,8 +334,8 @@
       radius
     );
 
-    glow.addColorStop(0, 'rgba(93, 107, 185, 0.14)');
-    glow.addColorStop(0.35, 'rgba(55, 82, 139, 0.07)');
+    glow.addColorStop(0, 'rgba(93, 127, 194, 0.2)');
+    glow.addColorStop(0.35, 'rgba(55, 82, 139, 0.09)');
     glow.addColorStop(1, 'rgba(10, 15, 30, 0)');
 
     context.fillStyle = glow;
@@ -530,10 +532,7 @@
   }
 
   makeOtter();
+  startedAt = performance.now();
   resize();
-  ready = true;
-
-  if (ready) {
-    start();
-  }
+  start();
 })();
