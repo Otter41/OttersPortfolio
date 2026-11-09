@@ -47,6 +47,29 @@
     [188, 171, 255]
   ];
 
+  // Glows are rendered once and reused, so the whole thing stays lightweight.
+  const glowSprites = particleColors.map(color => {
+    const texture = document.createElement('canvas');
+    const textureContext = texture.getContext('2d');
+    const size = 72;
+
+    texture.width = size;
+    texture.height = size;
+
+    if (textureContext) {
+      const gradient = textureContext.createRadialGradient(36, 36, 0, 36, 36, 35);
+
+      gradient.addColorStop(0, 'rgba(' + color.join(',') + ',0.8)');
+      gradient.addColorStop(0.20, 'rgba(' + color.join(',') + ',0.27)');
+      gradient.addColorStop(1, 'rgba(' + color.join(',') + ',0)');
+
+      textureContext.fillStyle = gradient;
+      textureContext.fillRect(0, 0, size, size);
+    }
+
+    return texture;
+  });
+
   const highlights = [
     { x: 784, y: 236, radius: 2.8 },
     { x: 914, y: 269, radius: 3.2 },
@@ -90,7 +113,8 @@
   }
 
   function addParticle(x, y, size, glow, kind = 'body') {
-    const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+    const colorIndex = Math.floor(Math.random() * particleColors.length);
+    const color = particleColors[colorIndex];
     const alpha = randomBetween(0.42, 0.97);
 
     particles.push({
@@ -100,6 +124,7 @@
       glow,
       kind,
       color,
+      colorIndex,
       alpha,
       fromX: randomBetween(-120, 1120),
       fromY: randomBetween(-130, 780),
@@ -192,6 +217,27 @@
     addCurve([[646, 388], [637, 445], [651, 491], [686, 494], [691, 455], [716, 394]], 146, 3, 0.10);
 
     whiskers.forEach(line => addCurve(line, 64, 1.4, 0.09));
+
+    // A loose spiral of stars winds through the body.
+    // It gives the otter a galaxy inside its silhouette.
+    for (let index = 0; index < 950; index++) {
+      const angle = randomBetween(0, Math.PI * 5);
+      const radius = 12 + angle * 8.2;
+      const x = 551 + Math.cos(angle) * radius * 1.15 + randomBetween(-10, 10);
+      const y = 347 + Math.sin(angle) * radius * 0.6 + randomBetween(-7, 7);
+
+      if (!shapeContext.isPointInPath(shapePath, x, y)) {
+        continue;
+      }
+
+      addParticle(
+        x,
+        y,
+        randomBetween(0.8, 2.1),
+        Math.random() < 0.13,
+        'spiral'
+      );
+    }
 
     // A few warm stars keep the artwork from feeling flat blue.
     for (let index = 0; index < 440; index++) {
@@ -286,12 +332,29 @@
       radius
     );
 
-    glow.addColorStop(0, 'rgba(91, 106, 166, 0.09)');
-    glow.addColorStop(0.35, 'rgba(55, 82, 139, 0.065)');
+    glow.addColorStop(0, 'rgba(93, 107, 185, 0.14)');
+    glow.addColorStop(0.35, 'rgba(55, 82, 139, 0.07)');
     glow.addColorStop(1, 'rgba(10, 15, 30, 0)');
 
     context.fillStyle = glow;
     context.fillRect(0, 0, width, height);
+
+    // Soft starlight behind the center and face.
+    drawGlow(
+      centerX + (551 - 505) * scale,
+      centerY + (344 - 324) * scale,
+      165 * scale,
+      [170, 193, 255],
+      0.10
+    );
+
+    drawGlow(
+      centerX + (787 - 505) * scale,
+      centerY + (259 - 324) * scale,
+      112 * scale,
+      [138, 200, 255],
+      0.11
+    );
   }
 
   function drawBackground(time) {
@@ -330,7 +393,12 @@
       const point = getPosition(particle, formation, time);
 
       if (particle.glow) {
-        drawGlow(point.x, point.y, particle.size * scale * 7 + 6, particle.color, 0.21);
+        const radius = particle.size * scale * 5 + 6;
+        const sprite = glowSprites[particle.colorIndex];
+
+        context.globalAlpha = 0.42;
+        context.drawImage(sprite, point.x - radius, point.y - radius, radius * 2, radius * 2);
+        context.globalAlpha = 1;
       }
 
       const shimmer = reducedMotion.matches
