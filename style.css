@@ -350,3 +350,10 @@ body.light .project-dialog{background:#fff}
   .galaxy-stage{will-change:auto}
   .planet-core,.planet-glow,.satellite,.orbital-arc,.scroll-arrow{animation:none!important}
 }
+
+/* Keep the planet centered when its column gets narrow. */
+.galaxy-stage{flex:0 0 660px}
+@media(max-width:780px){.theme-switch .theme-switch-orb{display:block}}
+.site-nav a.is-current{color:var(--accent2)}
+.project-card::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity .3s;background:radial-gradient(380px circle at var(--spot-x,50%) var(--spot-y,50%),rgba(154,166,244,.075),transparent 70%)}
+.project-card:hover::before{opacity:1}
