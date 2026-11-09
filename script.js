@@ -61,7 +61,7 @@ try { storedTheme = localStorage.getItem('otter-theme'); } catch (_) { /* Storag
 if (storedTheme === 'light' || storedTheme === 'dark') {
   setTheme(storedTheme === 'light');
 } else {
-  setTheme(window.matchMedia('(prefers-color-scheme: light)').matches);
+  setTheme(false); // Space looks better with the lights off.
 }
 themeButton.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
 
