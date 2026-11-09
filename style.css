@@ -72,16 +72,6 @@ button:focus-visible {
   top: 15px;
 }
 
-.starfield {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0.18;
-}
-
 .scroll-progress {
   position: fixed;
   z-index: 80;
@@ -638,7 +628,7 @@ button:focus-visible {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 385px;
+  min-height: 368px;
   overflow: hidden;
   border: 1px solid rgba(174, 193, 237, 0.14);
   border-radius: 14px;
@@ -679,7 +669,7 @@ button:focus-visible {
   border: 1px solid #8f9dcd66;
   border-radius: 14px;
   background: #101b33ed;
-  box-shadow: 0 30px 85px #02040e99;
+  box-shadow: 0 22px 60px rgba(2, 5, 17, 0.58);
   transform: rotate(-7deg);
   transition: transform 0.4s ease;
 }
@@ -771,7 +761,7 @@ button:focus-visible {
   border-radius: 37px;
   background:
     radial-gradient(ellipse at 50% 27%, #738ad1 0%, #454f9b 37%, #192649 100%);
-  box-shadow: 0 25px 85px #040716b8, 0 0 0 2px #b1bceb78;
+  box-shadow: 0 20px 60px rgba(4, 7, 22, 0.55), 0 0 0 2px #b1bceb59;
   transform: rotate(10deg) translateY(20px);
   transition: transform 0.4s ease;
 }
@@ -955,7 +945,7 @@ button:focus-visible {
   grid-template-columns: 90px minmax(0, 1fr) 55px;
   gap: 20px;
   align-items: center;
-  padding: 36px 17px 38px 0;
+  padding: 29px 14px 32px 0;
   border-bottom: 1px solid var(--line);
   transition: background 0.2s ease, padding 0.2s ease;
 }
@@ -1382,13 +1372,7 @@ button:focus-visible {
 /* RESPONSIVE */
 
 @media (max-width: 1200px) {
-  .hero h1 {
-    font-size: clamp(67px, 7.1vw, 96px);
-  }
 
-  .hero-art {
-    min-height: 480px;
-  }
 
   .next-layout {
     gap: 55px;
@@ -1398,43 +1382,7 @@ button:focus-visible {
 @media (max-width: 960px) {
   .section-container,
   .nav-container,
-  .hero-container {
-    width: min(100% - 54px, 1380px);
-  }
 
-  .hero-container {
-    grid-template-columns: 1fr;
-    padding-top: 150px;
-    padding-bottom: 95px;
-  }
-
-  .hero h1 {
-    font-size: clamp(74px, 10vw, 108px);
-  }
-
-  .hero-copy {
-    padding-top: 0;
-  }
-
-  .hero-description {
-    max-width: 640px;
-  }
-
-  .hero-art {
-    height: 520px;
-    min-height: 0;
-    margin-top: -12px;
-  }
-
-  .otter-art {
-    width: min(115%, 870px);
-    margin-left: 0;
-  }
-
-  .hero-foot {
-    left: 27px;
-    right: 27px;
-  }
 
   .statement-grid,
   .about-layout {
@@ -1575,9 +1523,7 @@ button:focus-visible {
 @media (max-width: 560px) {
   .section-container,
   .nav-container,
-  .hero-container {
-    width: calc(100% - 42px);
-  }
+
 
   .brand {
     font-size: 24px;
@@ -1595,33 +1541,7 @@ button:focus-visible {
     padding: 8px 12px;
   }
 
-  .hero-container {
-    padding-top: 136px;
-    padding-bottom: 95px;
-  }
 
-  .eyebrow {
-    font-size: 9px;
-    letter-spacing: 1.6px;
-    margin-bottom: 22px;
-  }
-
-  .hero h1 {
-    font-size: clamp(44px, 11.6vw, 68px);
-    letter-spacing: -0.075em;
-    line-height: 1.1;
-  }
-
-  .hero-description {
-    font-size: 13px;
-    line-height: 1.85;
-    margin-top: 8px;
-    margin-bottom: 28px;
-  }
-
-  .hero-links {
-    gap: 20px;
-  }
 
   .primary-link {
     min-height: 47px;
@@ -1635,26 +1555,6 @@ button:focus-visible {
     font-size: 11px;
   }
 
-  .hero-role {
-    margin-top: 34px;
-    font-size: 9px;
-    letter-spacing: 0.7px;
-    line-height: 1.8;
-  }
-
-  .hero-art {
-    height: 360px;
-    margin-top: -10px;
-  }
-
-  .otter-art {
-    width: 126%;
-    transform-origin: 50% 50%;
-  }
-
-  .art-orbit {
-    width: 92%;
-  }
 
   .art-caption {
     font-size: 7px;
@@ -1671,13 +1571,6 @@ button:focus-visible {
     left: 0;
   }
 
-  .hero-foot {
-    left: 21px;
-    right: 21px;
-    bottom: 24px;
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
 
   .hero-foot > span {
     display: none;
@@ -1849,7 +1742,4 @@ button:focus-visible {
     transform: none;
   }
 
-  .otter-art {
-    will-change: auto;
-  }
 }
