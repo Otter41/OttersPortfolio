@@ -1,5 +1,7 @@
 'use strict';
 
+// Keep the constellation's variables separate from the rest of the site.
+(() => {
 // LUTRA is a little made-up constellation.
 // The star map is hand drawn. No images or libraries needed.
 const otterPoints = {
@@ -248,3 +250,5 @@ if (context && panel) {
 
   play();
 }
+
+})();
