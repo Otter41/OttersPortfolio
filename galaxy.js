@@ -391,7 +391,11 @@
     smoothX += (mouseX - smoothX) * 0.05;
     smoothY += (mouseY - smoothY) * 0.05;
 
-    for (const particle of particles) {
+    // Fewer stars on smaller screens keeps the motion smooth.
+    const step = width < 760 ? 2 : 1;
+
+    for (let index = 0; index < particles.length; index += step) {
+      const particle = particles[index];
       const point = getPosition(particle, formation, time);
 
       if (particle.glow) {
