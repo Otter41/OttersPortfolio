@@ -428,47 +428,84 @@
   // Find the text and cards currently on screen.
   // These areas stay clear even when the constellation breaks apart.
   function refreshProtectedZones() {
-    // Protect the actual writing, not the empty space around it.
-    // Otherwise the stars vanish behind giant invisible rectangles.
-    const selectors = [
-      '.site-header',
-      '.galaxy-title > *',
-      '.galaxy-footer > *',
-      '.statement-grid > *',
-      '.section-heading > *',
-      '.feature-visual',
-      '.feature-copy > *',
-      '.archive-heading > *',
-      '.archive-project > *',
-      '.archive-more',
-      '.about-copy > *',
-      '.about-layout > .section-label',
-      '.skill-column > *',
-      '.next-copy > *',
-      '.journey-step > *',
-      '.contact-inner > *',
-      '.footer-inner > *',
-      '.project-dialog[open]'
-    ];
+    // Only protect the words, not entire sections or preview panels.
+    // Otherwise half the constellation disappears for no good reason.
+    const textSelector = [
+      'main h1',
+      'main h2',
+      'main h3',
+      'main h4',
+      'main p',
+      'main a',
+      'main button',
+      'main li',
+      '.section-label',
+      '.project-type',
+      '.skill-icon',
+      '.journey-state',
+      '.archive-number',
+      '.feature-index',
+      '.chat-message',
+      '.chat-title',
+      '.chat-input',
+      '.phone-time',
+      '.phone-day',
+      '.phone-weather',
+      '.site-footer a',
+      '.site-footer span'
+    ].join(', ');
 
     protectedZones = [];
 
-    document.querySelectorAll(selectors.join(',')).forEach(element => {
-      const rect = element.getBoundingClientRect();
+    // Small gaps around the letters keep the text easy to read.
+    // A full-width paragraph box would hide too many stars.
+    const padding = width < 760 ? 5 : 7;
 
-      if (rect.bottom < 0 || rect.top > height) {
+    function protect(rect, extra = padding) {
+      if (rect.width === 0 || rect.height === 0 ||
+          rect.bottom < 0 || rect.top > height) {
         return;
       }
 
-      const padding = width < 760 ? 14 : 24;
-
       protectedZones.push({
-        left: rect.left - padding,
-        top: rect.top - padding,
-        right: rect.right + padding,
-        bottom: rect.bottom + padding
+        left: rect.left - extra,
+        top: rect.top - extra,
+        right: rect.right + extra,
+        bottom: rect.bottom + extra
       });
+    }
+
+    const header = document.querySelector('.site-header');
+
+    if (header) {
+      protect(header.getBoundingClientRect(), 0);
+    }
+
+    const dialog = document.querySelector('.project-dialog[open]');
+
+    if (dialog) {
+      protect(dialog.getBoundingClientRect(), 12);
+    }
+
+    const range = document.createRange();
+
+    document.querySelectorAll(textSelector).forEach(element => {
+      const bounds = element.getBoundingClientRect();
+
+      if (bounds.bottom < 0 || bounds.top > height) {
+        return;
+      }
+
+      range.selectNodeContents(element);
+
+      // Text ranges give us the exact width of each line, including
+      // multiline headings. Empty space stays free for the stars.
+      for (const rect of range.getClientRects()) {
+        protect(rect);
+      }
     });
+
+    range.detach?.();
   }
 
   function queueZoneRefresh() {
@@ -777,6 +814,25 @@
     context.restore();
   }
 
+  function clearTextAreas() {
+    // Our canvas sits on top of the page, so cut out the words.
+    // The stars stay visible everywhere else, including project art.
+    context.save();
+    context.globalCompositeOperation = 'destination-out';
+    context.fillStyle = '#000';
+
+    for (const zone of protectedZones) {
+      context.fillRect(
+        zone.left,
+        zone.top,
+        zone.right - zone.left,
+        zone.bottom - zone.top
+      );
+    }
+
+    context.restore();
+  }
+
   function render(time) {
     animationId = null;
 
@@ -788,6 +844,7 @@
       context.clearRect(0, 0, width, height);
       paintBackground(time);
       paintConstellation(time);
+      clearTextAreas();
       lastFrame = time;
     }
 
