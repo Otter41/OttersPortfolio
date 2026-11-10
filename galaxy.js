@@ -428,24 +428,26 @@
   // Find the text and cards currently on screen.
   // These areas stay clear even when the constellation breaks apart.
   function refreshProtectedZones() {
+    // Protect the actual writing, not the empty space around it.
+    // Otherwise the stars vanish behind giant invisible rectangles.
     const selectors = [
       '.site-header',
-      '.galaxy-title',
-      '.galaxy-footer',
-      '.statement-grid',
-      '.section-heading',
+      '.galaxy-title > *',
+      '.galaxy-footer > *',
+      '.statement-grid > *',
+      '.section-heading > *',
       '.feature-visual',
-      '.feature-copy',
-      '.archive-heading',
-      '.archive-project',
+      '.feature-copy > *',
+      '.archive-heading > *',
+      '.archive-project > *',
       '.archive-more',
-      '.about-copy',
+      '.about-copy > *',
       '.about-layout > .section-label',
-      '.skill-column',
-      '.next-copy',
-      '.journey',
+      '.skill-column > *',
+      '.next-copy > *',
+      '.journey-step > *',
       '.contact-inner > *',
-      '.footer-inner',
+      '.footer-inner > *',
       '.project-dialog[open]'
     ];
 
@@ -458,7 +460,7 @@
         return;
       }
 
-      const padding = width < 760 ? 20 : 33;
+      const padding = width < 760 ? 14 : 24;
 
       protectedZones.push({
         left: rect.left - padding,
