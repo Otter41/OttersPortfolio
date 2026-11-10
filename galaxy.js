@@ -33,6 +33,8 @@
   let pointerY = 0;
   let pointerSmoothX = 0;
   let pointerSmoothY = 0;
+  let currentLayout = null;
+  let previousLayout = null;
 
   // This is the same constellation throughout the page.
   // The stars just find different places as you scroll.
@@ -401,6 +403,8 @@
       return;
     }
 
+    previousLayout = currentLayout || sceneLayout(activeScene);
+
     for (let index = 0; index < stars.length; index++) {
       const star = stars[index];
       const target = masks[next][index % masks[next].length];
@@ -436,9 +440,18 @@
       ? 1
       : ease((time - sceneStart) / duration);
 
-    const layout = sceneLayout(activeScene);
+    const targetLayout = sceneLayout(activeScene);
+    const originLayout = previousLayout || targetLayout;
+    const layout = {
+      centerX: originLayout.centerX + (targetLayout.centerX - originLayout.centerX) * progress,
+      centerY: originLayout.centerY + (targetLayout.centerY - originLayout.centerY) * progress,
+      scale: originLayout.scale + (targetLayout.scale - originLayout.scale) * progress
+    };
+
+    currentLayout = layout;
+
     const calm = activeScene !== 0;
-    const strength = calm ? 0.52 : 1;
+    const strength = calm ? 0.43 : 1;
 
     pointerSmoothX += (pointerX - pointerSmoothX) * 0.035;
     pointerSmoothY += (pointerY - pointerSmoothY) * 0.035;
@@ -448,7 +461,7 @@
       star.y = star.fromY + (star.toY - star.fromY) * progress;
       star.opacity = star.fromOpacity + (star.toOpacity - star.fromOpacity) * progress;
 
-      if (progress >= 1) {
+      if (progress >= 0.5) {
         star.color = star.toColor;
       }
 
