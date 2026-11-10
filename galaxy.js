@@ -324,8 +324,8 @@
         targetAlpha: point.alpha,
         size: point.size,
         phase: random(0, Math.PI * 2),
-        glow: index % 16 === 0,
-        flare: index % 115 === 0,
+        glow: index % 13 === 0,
+        flare: index % 86 === 0,
         pushX: 0,
         pushY: 0
       });
@@ -524,7 +524,7 @@
     const blackHole = activeScene === 6;
     const intensity = hero ? 1 : blackHole ? 0.88 : width < 760 ? 0.50 : 0.72;
 
-    // A faint nebula makes the cluster feel three-dimensional.
+    // A few quiet layers of light give the galaxy some depth.
     paintGlow(
       layout.x,
       layout.y,
@@ -532,6 +532,24 @@
       hero ? palette[4] : palette[2],
       hero ? 0.12 : 0.065
     );
+
+    if (hero) {
+      paintGlow(
+        layout.x - layout.scale * 0.18,
+        layout.y - layout.scale * 0.33,
+        layout.scale * 0.43,
+        palette[0],
+        0.13
+      );
+
+      paintGlow(
+        layout.x + layout.scale * 0.22,
+        layout.y + layout.scale * 0.35,
+        layout.scale * 0.60,
+        palette[5],
+        0.09
+      );
+    }
 
     const elapsed = time - sceneChangedAt;
     const transition = clamp(elapsed / 1100, 0, 1);
@@ -545,6 +563,14 @@
 
       let x = layout.x + star.x * layout.scale;
       let y = layout.y + star.y * layout.scale;
+
+      // Barely moving starlight keeps a finished shape from feeling frozen.
+      if (!reducedMotion.matches) {
+        const drift = Math.sin(time * 0.0006 + star.phase) * 0.9;
+
+        x += drift;
+        y -= drift * 0.65;
+      }
 
       // Stars move aside when the cursor passes, then drift back.
       if (pointerActive && !reducedMotion.matches) {
