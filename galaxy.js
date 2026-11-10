@@ -679,7 +679,32 @@
 
   // Stars converge first. A black centre and photon ring appear after.
   function paintEventHorizon(layout, progress, time) {
+    // The collision creates a quick flash before the darkness settles.
     if (progress < 0.38) {
+      const intensity = Math.exp(-Math.pow((progress - 0.35) / 0.075, 2));
+
+      if (intensity > 0.025 &&
+          !isOverContent(layout.centerX, layout.centerY)) {
+        const radius = Math.max(30, 155 * layout.scale);
+        const flash = context.createRadialGradient(
+          layout.centerX,
+          layout.centerY,
+          0,
+          layout.centerX,
+          layout.centerY,
+          radius
+        );
+
+        flash.addColorStop(0, 'rgba(240,247,255,' + intensity * 0.8 + ')');
+        flash.addColorStop(0.3, 'rgba(157,200,255,' + intensity * 0.3 + ')');
+        flash.addColorStop(1, 'rgba(109,159,255,0)');
+
+        context.fillStyle = flash;
+        context.beginPath();
+        context.arc(layout.centerX, layout.centerY, radius, 0, Math.PI * 2);
+        context.fill();
+      }
+
       return;
     }
 
