@@ -94,12 +94,12 @@
     const colours = [
       '',
       '#302832', // Dark eyes, nose and tiny details.
-      '#aa7865', // Brown fur.
-      '#8d7470', // Shadows in the fur.
-      '#f0e1d0', // The muzzle and chest.
-      '#e3d0c0', // Highlights.
+      '#a0a9d2', // Fur, lit by the blue stars.
+      '#777ba9', // Softer shadows in the fur.
+      '#f1f1ff', // The muzzle and chest.
+      '#e2d8ee', // Highlights.
       '#5fc4d7', // Water and splashes.
-      '#80a7b5', // Deeper water.
+      '#79bbd4', // Deeper water.
       '#d89894'  // A little colour inside the mouth.
     ];
 
@@ -228,6 +228,11 @@
 
     if (red > 216 && green > 210 && blue > 202) {
       return 0;
+    }
+
+    // A handful of warm stars keeps the whole thing from going flat blue.
+    if (random(0, 1) < 0.07) {
+      return 3;
     }
 
     return Math.floor(random(0, 3));
