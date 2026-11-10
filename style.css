@@ -79,7 +79,8 @@ button:focus-visible {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #7c9be5, #d0abf6, #8fe1e3);
+  background: linear-gradient(90deg, #6a8de0, #c9a0f4, #7adde0, #9bb8f7);
+  box-shadow: 0 0 10px rgba(180, 160, 255, 0.4);
   pointer-events: none;
 }
 
@@ -124,9 +125,9 @@ button:focus-visible {
   top: 0;
   left: 0;
   right: 0;
-  border-bottom: 1px solid rgba(182, 198, 237, 0.11);
-  background: rgba(6, 9, 19, 0.48);
-  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(182, 198, 237, 0.13);
+  background: rgba(5, 8, 18, 0.52);
+  backdrop-filter: blur(20px) saturate(1.4);
 }
 
 .nav-container {
@@ -231,8 +232,10 @@ button:focus-visible {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 50% 52%, rgba(32, 57, 104, 0.13), transparent 57%),
-    linear-gradient(180deg, rgba(4, 9, 20, 0.3), transparent 22%, rgba(2, 5, 13, 0.4));
+    radial-gradient(ellipse at 50% 52%, rgba(32, 57, 104, 0.18), transparent 57%),
+    radial-gradient(ellipse at 20% 15%, rgba(55, 30, 95, 0.12), transparent 40%),
+    radial-gradient(ellipse at 82% 78%, rgba(20, 50, 100, 0.10), transparent 38%),
+    linear-gradient(180deg, rgba(4, 9, 20, 0.35), transparent 22%, rgba(2, 5, 13, 0.45));
   pointer-events: none;
 }
 
@@ -241,8 +244,10 @@ button:focus-visible {
   z-index: 0;
   inset: 7% 8%;
   background:
-    radial-gradient(ellipse at 48% 46%, rgba(36, 74, 148, 0.2), transparent 50%),
-    radial-gradient(ellipse at 57% 62%, rgba(105, 69, 128, 0.09), transparent 45%);
+    radial-gradient(ellipse at 48% 46%, rgba(36, 74, 148, 0.26), transparent 50%),
+    radial-gradient(ellipse at 57% 62%, rgba(105, 69, 128, 0.14), transparent 45%),
+    radial-gradient(ellipse at 15% 30%, rgba(40, 20, 90, 0.11), transparent 38%),
+    radial-gradient(ellipse at 85% 20%, rgba(20, 60, 120, 0.10), transparent 35%);
   filter: blur(55px);
   pointer-events: none;
 }
@@ -575,7 +580,8 @@ button:focus-visible {
   z-index: auto;
   padding-block: 118px 130px;
   background:
-    radial-gradient(ellipse at 89% 16%, rgba(60, 60, 112, 0.1), transparent 37%),
+    radial-gradient(ellipse at 89% 16%, rgba(60, 60, 112, 0.14), transparent 37%),
+    radial-gradient(ellipse at 8% 88%, rgba(30, 50, 110, 0.10), transparent 40%),
     #080c17;
 }
 
@@ -1029,7 +1035,8 @@ button:focus-visible {
   padding-block: 118px 127px;
   border-block: 1px solid var(--line);
   background:
-    radial-gradient(ellipse at 2% 79%, #4c487321, transparent 43%),
+    radial-gradient(ellipse at 2% 79%, rgba(76, 72, 115, 0.16), transparent 43%),
+    radial-gradient(ellipse at 92% 12%, rgba(30, 55, 110, 0.10), transparent 38%),
     #0c1221;
 }
 
@@ -1118,7 +1125,8 @@ button:focus-visible {
   padding-block: 126px;
   border-block: 1px solid var(--line);
   background:
-    radial-gradient(ellipse at 79% 52%, #3f477c24, transparent 40%),
+    radial-gradient(ellipse at 79% 52%, rgba(63, 71, 124, 0.17), transparent 40%),
+    radial-gradient(ellipse at 10% 20%, rgba(40, 25, 90, 0.10), transparent 36%),
     #0d1425;
 }
 
@@ -1218,8 +1226,9 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 45% 74%, #47458a55, transparent 48%),
-    radial-gradient(ellipse at 73% 42%, #35668d33, transparent 42%);
+    radial-gradient(ellipse at 45% 74%, rgba(71, 69, 138, 0.38), transparent 48%),
+    radial-gradient(ellipse at 73% 42%, rgba(53, 102, 141, 0.24), transparent 42%),
+    radial-gradient(ellipse at 20% 25%, rgba(40, 20, 90, 0.14), transparent 38%);
   pointer-events: none;
 }
 

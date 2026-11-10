@@ -837,6 +837,156 @@
     context.restore();
   }
 
+  // ─── Deep field ───────────────────────────────────────────────────────────
+
+  const deepField = [];
+  const nebulaLayers = [];
+  const shootingStars = [];
+
+  function buildDeepStars() {
+    const count = window.innerWidth < 760 ? 1800 : 4200;
+
+    for (let i = 0; i < count; i++) {
+      deepField.push({
+        x: Math.random(),
+        y: Math.random(),
+        size: random(0.3, 1.9),
+        opacity: random(0.07, 0.52),
+        phase: random(0, Math.PI * 2),
+        speed: random(0.00018, 0.00055),
+        parallax: random(0.4, 1.8)
+      });
+    }
+  }
+
+  function buildNebulaLayers() {
+    const configs = [
+      { x: 0.72, y: 0.18, rx: 0.38, ry: 0.22, color: [36, 68, 148], opacity: 0.13 },
+      { x: 0.14, y: 0.72, rx: 0.30, ry: 0.19, color: [88, 42, 128], opacity: 0.10 },
+      { x: 0.55, y: 0.58, rx: 0.44, ry: 0.26, color: [22, 54, 110], opacity: 0.09 },
+      { x: 0.88, y: 0.80, rx: 0.26, ry: 0.16, color: [60, 30, 100], opacity: 0.08 },
+      { x: 0.24, y: 0.33, rx: 0.32, ry: 0.21, color: [18, 72, 130], opacity: 0.07 }
+    ];
+
+    for (const cfg of configs) {
+      nebulaLayers.push(cfg);
+    }
+  }
+
+  function paintDeepField(time) {
+    if (reducedMotion.matches) {
+      return;
+    }
+
+    const scrollOffset = window.scrollY * 0.00015;
+
+    for (const star of deepField) {
+      const shimmer = 0.65 + Math.sin(time * star.speed + star.phase) * 0.35;
+      const x = ((star.x + scrollOffset * star.parallax * 0.3) % 1) * width;
+      const y = ((star.y + scrollOffset * star.parallax * 0.08) % 1) * height;
+
+      if (isOverContent(x, y)) {
+        continue;
+      }
+
+      context.fillStyle = 'rgba(195,218,255,' + star.opacity * shimmer + ')';
+      context.fillRect(x, y, star.size, star.size);
+    }
+  }
+
+  function paintNebula(time) {
+    if (reducedMotion.matches) {
+      return;
+    }
+
+    for (const layer of nebulaLayers) {
+      const drift = Math.sin(time * 0.000055 + layer.x * 7) * 0.012;
+      const pulse = 1 + Math.sin(time * 0.000038 + layer.y * 5) * 0.07;
+      const cx = (layer.x + drift) * width;
+      const cy = layer.y * height;
+      const rx = layer.rx * width * pulse;
+      const ry = layer.ry * height * pulse;
+
+      const grad = context.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+      grad.addColorStop(0, 'rgba(' + layer.color.join(',') + ',' + layer.opacity + ')');
+      grad.addColorStop(0.55, 'rgba(' + layer.color.join(',') + ',' + layer.opacity * 0.4 + ')');
+      grad.addColorStop(1, 'rgba(' + layer.color.join(',') + ',0)');
+
+      context.save();
+      context.scale(1, ry / rx);
+      context.fillStyle = grad;
+      context.beginPath();
+      context.arc(cx, cy * (rx / ry), rx, 0, Math.PI * 2);
+      context.fill();
+      context.restore();
+    }
+  }
+
+  function spawnShootingStar() {
+    if (reducedMotion.matches) {
+      return;
+    }
+
+    if (Math.random() > 0.0018) {
+      return;
+    }
+
+    const angle = Math.PI / 7 + Math.random() * Math.PI / 9;
+    const speed = random(6, 14);
+
+    shootingStars.push({
+      x: random(0.05, 0.85) * width,
+      y: random(0.02, 0.45) * height,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      length: random(55, 140),
+      opacity: 0,
+      life: 0,
+      maxLife: random(55, 100),
+      colorShift: Math.random() > 0.5 ? [200, 230, 255] : [255, 220, 180]
+    });
+  }
+
+  function paintShootingStars() {
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const s = shootingStars[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life++;
+
+      const halfLife = s.maxLife * 0.5;
+      s.opacity = s.life < halfLife
+        ? s.life / halfLife
+        : 1 - (s.life - halfLife) / halfLife;
+
+      if (s.life >= s.maxLife) {
+        shootingStars.splice(i, 1);
+        continue;
+      }
+
+      const tailX = s.x - Math.cos(Math.atan2(s.vy, s.vx)) * s.length;
+      const tailY = s.y - Math.sin(Math.atan2(s.vy, s.vx)) * s.length;
+
+      const tail = context.createLinearGradient(tailX, tailY, s.x, s.y);
+      tail.addColorStop(0, 'rgba(' + s.colorShift.join(',') + ',0)');
+      tail.addColorStop(1, 'rgba(' + s.colorShift.join(',') + ',' + s.opacity * 0.72 + ')');
+
+      context.beginPath();
+      context.moveTo(tailX, tailY);
+      context.lineTo(s.x, s.y);
+      context.strokeStyle = tail;
+      context.lineWidth = 1.4;
+      context.stroke();
+
+      context.beginPath();
+      context.arc(s.x, s.y, 1.8, 0, Math.PI * 2);
+      context.fillStyle = 'rgba(255,255,255,' + s.opacity + ')';
+      context.fill();
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+
   function render(time) {
     animationId = null;
 
@@ -846,7 +996,11 @@
 
     if (time - lastFrame > 34 || reducedMotion.matches) {
       context.clearRect(0, 0, width, height);
+      paintNebula(time);
+      paintDeepField(time);
       paintBackground(time);
+      spawnShootingStar();
+      paintShootingStars();
       paintConstellation(time);
       clearTextAreas();
       lastFrame = time;
@@ -915,6 +1069,8 @@
   }
 
   buildMasks();
+  buildDeepStars();
+  buildNebulaLayers();
   makeStars();
   resize();
   refreshProtectedZones();
