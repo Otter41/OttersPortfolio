@@ -390,19 +390,106 @@
   function sceneLayout(index) {
     const mobile = width < 760;
 
-    const centerX = index === 0
-      ? width * (mobile ? 0.51 : 0.51)
-      : width * (mobile ? 0.73 : index % 2 === 0 ? 0.22 : 0.77);
+    if (index === 0) {
+      return {
+        centerX: width * 0.5,
+        centerY: height * 0.52,
+        scale: Math.min(
+          width * (mobile ? 0.67 : 0.44) / maskWidth,
+          height * 0.71 / maskHeight
+        )
+      };
+    }
 
-    const centerY = height * (mobile ? 0.53 : 0.53);
-    const maxWidth = width * (mobile ? 0.75 : index === 0 ? 0.44 : 0.38);
-    const maxHeight = height * (mobile ? 0.55 : index === 0 ? 0.70 : 0.64);
+    if (index === 5) {
+      return {
+        centerX: width * (mobile ? 0.5 : 0.79),
+        centerY: height * (mobile ? 0.24 : 0.49),
+        scale: Math.min(
+          width * (mobile ? 0.72 : 0.34) / maskWidth,
+          height * (mobile ? 0.39 : 0.60) / maskHeight
+        )
+      };
+    }
+
+    const centers = [0.5, 0.83, 0.18, 0.82, 0.80];
 
     return {
-      centerX,
-      centerY,
-      scale: Math.min(maxWidth / maskWidth, maxHeight / maskHeight)
+      centerX: width * (mobile ? 0.76 : centers[index]),
+      centerY: height * (mobile ? 0.52 : 0.51),
+      scale: Math.min(
+        width * (mobile ? 0.53 : 0.35) / maskWidth,
+        height * 0.55 / maskHeight
+      )
     };
+  }
+
+  // Find the text and cards currently on screen.
+  // These areas stay clear even when the constellation breaks apart.
+  function refreshProtectedZones() {
+    const selectors = [
+      '.site-header',
+      '.galaxy-title',
+      '.galaxy-footer',
+      '.statement-grid',
+      '.section-heading',
+      '.feature-visual',
+      '.feature-copy',
+      '.archive-heading',
+      '.archive-project',
+      '.archive-more',
+      '.about-copy',
+      '.about-layout > .section-label',
+      '.skill-column',
+      '.next-copy',
+      '.journey',
+      '.contact-inner > *',
+      '.footer-inner',
+      '.project-dialog[open]'
+    ];
+
+    protectedZones = [];
+
+    document.querySelectorAll(selectors.join(',')).forEach(element => {
+      const rect = element.getBoundingClientRect();
+
+      if (rect.bottom < 0 || rect.top > height) {
+        return;
+      }
+
+      const padding = width < 760 ? 20 : 33;
+
+      protectedZones.push({
+        left: rect.left - padding,
+        top: rect.top - padding,
+        right: rect.right + padding,
+        bottom: rect.bottom + padding
+      });
+    });
+  }
+
+  function queueZoneRefresh() {
+    if (zonesQueued) {
+      return;
+    }
+
+    zonesQueued = true;
+
+    requestAnimationFrame(() => {
+      zonesQueued = false;
+      refreshProtectedZones();
+    });
+  }
+
+  function isOverContent(x, y) {
+    for (const zone of protectedZones) {
+      if (x >= zone.left && x <= zone.right &&
+          y >= zone.top && y <= zone.bottom) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function updateScene() {
@@ -411,7 +498,7 @@
     for (let index = 1; index < sceneIds.length; index++) {
       const element = document.getElementById(sceneIds[index]);
 
-      if (element && element.getBoundingClientRect().top < height * 0.65) {
+      if (element && element.getBoundingClientRect().top < height * 0.72) {
         next = index;
       }
     }
@@ -420,6 +507,7 @@
       return;
     }
 
+    // Don't jump if someone scrolls past two sections quickly.
     previousLayout = currentLayout || sceneLayout(activeScene);
 
     for (let index = 0; index < stars.length; index++) {
@@ -438,6 +526,7 @@
 
     activeScene = next;
     sceneStart = performance.now();
+    scrollScatter = 1;
   }
 
   function paintBackground(time) {
