@@ -222,7 +222,6 @@ button:focus-visible {
   min-height: 780px;
   min-height: 100svh;
   overflow: hidden;
-  isolation: isolate;
   background: #030710;
 }
 
@@ -250,7 +249,7 @@ button:focus-visible {
 
 .galaxy-canvas {
   position: fixed;
-  z-index: 3;
+  z-index: 12;
   inset: 0;
   display: block;
   width: 100%;
@@ -258,15 +257,16 @@ button:focus-visible {
   pointer-events: none;
 }
 
-/* The stars float behind the content, even after the hero. */
+/* The stars sit above section backgrounds, but below actual content.
+   Keep the sections themselves out of their own stacking contexts. */
 .section-container {
   position: relative;
-  z-index: 4;
+  z-index: 20;
 }
 
 .galaxy-hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -355,7 +355,7 @@ button:focus-visible {
 
 .galaxy-footer {
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   bottom: 43px;
   left: max(52px, calc((100% - 1600px) / 2));
   right: max(52px, calc((100% - 1600px) / 2));
@@ -1226,7 +1226,7 @@ button:focus-visible {
 /* The final scene gives the black hole its own space. */
 .contact-inner {
   position: relative;
-  z-index: 4;
+  z-index: 20;
   min-height: 615px;
   padding-block: 145px 150px;
   text-align: left;
@@ -1265,7 +1265,7 @@ button:focus-visible {
 
 .site-footer {
   position: relative;
-  z-index: 1;
+  z-index: auto;
   border-top: 1px solid var(--line);
   background: #070b15;
 }
