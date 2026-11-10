@@ -17,7 +17,7 @@
   const sceneIds = ['top', 'work', 'about', 'stack', 'next', 'contact'];
   const maskWidth = 720;
   const maskHeight = 760;
-  const particleCount = window.innerWidth < 760 ? 3200 : 7600;
+  const particleCount = window.innerWidth < 760 ? 2700 : 6200;
   const masks = {};
   const stars = [];
   const backgroundStars = [];
@@ -29,10 +29,15 @@
   let sceneStart = 0;
   let animationId = null;
   let lastFrame = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-  let pointerSmoothX = 0;
-  let pointerSmoothY = 0;
+  let pointerX = -1000;
+  let pointerY = -1000;
+  let pointerActive = false;
+  let scrollScatter = 0;
+  let lastScroll = 0;
+  let lastScrollPosition = window.scrollY;
+  let scrollDirection = 1;
+  let protectedZones = [];
+  let zonesQueued = false;
   let currentLayout = null;
   let previousLayout = null;
 
@@ -190,18 +195,35 @@
     strokePath(ctx, [[322, 424], [351, 452], [406, 391]], '#f5f9ff', 16);
   }
 
-  function drawSpark(ctx) {
+  // Stars orbit a dark core in the final scene.
+  function drawBlackHole(ctx) {
     ctx.clearRect(0, 0, maskWidth, maskHeight);
     ctx.save();
     ctx.translate(360, 380);
+    ctx.rotate(-0.34);
 
-    for (let index = 0; index < 10; index++) {
-      ctx.rotate(Math.PI / 5);
-      ellipse(ctx, 0, -165, 35, 126, index % 3 === 0 ? '#f6d3af' : '#b2cbfb');
-    }
+    const rings = [
+      { x: 226, y: 109, width: 31, color: '#98cfff' },
+      { x: 185, y: 87, width: 27, color: '#f1c6a2' },
+      { x: 151, y: 72, width: 18, color: '#afaaff' },
+      { x: 125, y: 62, width: 10, color: '#f4f8ff' }
+    ];
 
-    ellipse(ctx, 0, 0, 95, 95, '#f8f2ff');
+    rings.forEach(ring => {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, ring.x, ring.y, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = ring.color;
+      ctx.lineWidth = ring.width;
+      ctx.stroke();
+    });
+
     ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(360, 380, 101, 0, Math.PI * 2);
+    ctx.strokeStyle = '#ecf1ff';
+    ctx.lineWidth = 10;
+    ctx.stroke();
   }
 
   const drawFunctions = [
@@ -210,7 +232,7 @@
     drawPaw,
     drawOrbit,
     drawCloud,
-    drawSpark
+    drawBlackHole
   ];
 
   function chooseColor(red, green, blue) {
@@ -333,13 +355,18 @@
         opacity: initial.opacity,
         fromOpacity: 0,
         toOpacity: initial.opacity,
-        size: random(0.4, 1.6),
-        bright: index % 21 === 0,
-        phase: random(0, Math.PI * 2)
+        size: random(0.4, 2.1),
+        bright: index % 12 === 0,
+        flare: index % 67 === 0,
+        phase: random(0, Math.PI * 2),
+        scatterAngle: random(0, Math.PI * 2),
+        scatterDistance: random(125, 320),
+        pushX: 0,
+        pushY: 0
       });
     }
 
-    for (let index = 0; index < 180; index++) {
+    for (let index = 0; index < 270; index++) {
       backgroundStars.push({
         x: Math.random(),
         y: Math.random(),
