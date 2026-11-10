@@ -27,6 +27,7 @@
   let pixelRatio = 1;
   let activeScene = 0;
   let sceneStart = 0;
+  let firstEntrance = true;
   let animationId = null;
   let lastFrame = 0;
   let pointerX = -1000;
@@ -525,6 +526,7 @@
     }
 
     activeScene = next;
+    firstEntrance = false;
     sceneStart = performance.now();
     scrollScatter = 1;
   }
@@ -535,14 +537,20 @@
         ? 1
         : 0.76 + Math.sin(time * 0.0007 + star.phase) * 0.24;
 
+      const x = star.x * width;
+      const y = star.y * height;
+
+      if (isOverContent(x, y)) {
+        continue;
+      }
+
       context.fillStyle = 'rgba(201,222,255,' + star.opacity * shimmer + ')';
-      context.fillRect(star.x * width, star.y * height, star.size, star.size);
+      context.fillRect(x, y, star.size, star.size);
     }
   }
 
   function paintConstellation(time) {
-    const firstEntrance = activeScene === 0 && sceneStart < 2000;
-    const duration = firstEntrance ? 1500 : 560;
+    const duration = firstEntrance && activeScene === 0 ? 1450 : 540;
     const rawProgress = reducedMotion.matches
       ? 1
       : Math.min(1, (time - sceneStart) / duration);
@@ -806,6 +814,7 @@
     lastScroll = performance.now();
     scrollDirection = delta >= 0 ? 1 : -1;
     scrollScatter = 1;
+    firstEntrance = false;
 
     updateScene();
     queueZoneRefresh();
