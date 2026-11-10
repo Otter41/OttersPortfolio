@@ -541,10 +541,23 @@
   }
 
   function paintConstellation(time) {
-    const duration = activeScene === 0 ? 2900 : 1600;
-    const progress = reducedMotion.matches
+    const firstEntrance = activeScene === 0 && sceneStart < 2000;
+    const duration = firstEntrance ? 1500 : 560;
+    const rawProgress = reducedMotion.matches
       ? 1
-      : ease((time - sceneStart) / duration);
+      : Math.min(1, (time - sceneStart) / duration);
+    const progress = ease(rawProgress);
+
+    // Scattering is immediate while scrolling, then clears quickly.
+    if (!reducedMotion.matches && time - lastScroll < 100) {
+      scrollScatter = Math.min(1, scrollScatter + 0.15);
+    } else {
+      scrollScatter *= 0.80;
+    }
+
+    if (scrollScatter < 0.002) {
+      scrollScatter = 0;
+    }
 
     const targetLayout = sceneLayout(activeScene);
     const originLayout = previousLayout || targetLayout;
@@ -556,15 +569,27 @@
 
     currentLayout = layout;
 
-    const calm = activeScene !== 0;
-    const strength = calm ? 0.43 : 1;
-
-    pointerSmoothX += (pointerX - pointerSmoothX) * 0.035;
-    pointerSmoothY += (pointerY - pointerSmoothY) * 0.035;
+    const strength = activeScene === 0 ? 1 : activeScene === 5 ? 0.92 : 0.60;
+    const scrollOpacity = 1 - scrollScatter * 0.76;
+    const pointerRadius = width < 760 ? 0 : 160;
 
     for (const star of stars) {
-      star.x = star.fromX + (star.toX - star.fromX) * progress;
-      star.y = star.fromY + (star.toY - star.fromY) * progress;
+      // At the end they collide, then settle into the accretion disk.
+      if (activeScene === 5 && rawProgress < 1 && !reducedMotion.matches) {
+        if (rawProgress < 0.38) {
+          const collapse = ease(rawProgress / 0.38);
+          star.x = star.fromX + (360 - star.fromX) * collapse;
+          star.y = star.fromY + (380 - star.fromY) * collapse;
+        } else {
+          const expand = ease((rawProgress - 0.38) / 0.62);
+          star.x = 360 + (star.toX - 360) * expand;
+          star.y = 380 + (star.toY - 380) * expand;
+        }
+      } else {
+        star.x = star.fromX + (star.toX - star.fromX) * progress;
+        star.y = star.fromY + (star.toY - star.fromY) * progress;
+      }
+
       star.opacity = star.fromOpacity + (star.toOpacity - star.fromOpacity) * progress;
 
       if (progress >= 0.5) {
@@ -573,18 +598,57 @@
 
       const drift = reducedMotion.matches
         ? 0
-        : Math.sin(time * 0.00053 + star.phase) * 0.65;
+        : Math.sin(time * 0.0006 + star.phase) * 0.9;
 
-      const x = layout.centerX + (star.x - maskWidth / 2 + drift) * layout.scale + pointerSmoothX;
-      const y = layout.centerY + (star.y - maskHeight / 2 + drift) * layout.scale + pointerSmoothY;
+      let x = layout.centerX + (star.x - maskWidth / 2 + drift) * layout.scale;
+      let y = layout.centerY + (star.y - maskHeight / 2 + drift) * layout.scale;
+
+      // One scroll tick sends the shape out into separate moving stars.
+      const scatter = scrollScatter * star.scatterDistance * Math.max(0.65, layout.scale);
+      x += Math.cos(star.scatterAngle) * scatter;
+      y += Math.sin(star.scatterAngle) * scatter * scrollDirection;
+
+      // The cursor nudges nearby particles out of the way.
+      if (pointerActive && !reducedMotion.matches) {
+        const dx = x - pointerX;
+        const dy = y - pointerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0.1 && distance < pointerRadius) {
+          const influence = Math.pow(1 - distance / pointerRadius, 2) * 23;
+          star.pushX += dx / distance * influence;
+          star.pushY += dy / distance * influence;
+        }
+      }
+
+      star.pushX = Math.max(-125, Math.min(125, star.pushX * 0.84));
+      star.pushY = Math.max(-125, Math.min(125, star.pushY * 0.84));
+      x += star.pushX;
+      y += star.pushY;
+
+      // Don't let the stars or their glow go across readable content.
+      if (isOverContent(x, y)) {
+        continue;
+      }
+
       const color = palette[star.color];
-      const opacity = star.opacity * strength;
-      const radius = Math.max(0.35, star.size * layout.scale);
+      const shimmer = reducedMotion.matches
+        ? 1
+        : 0.78 + Math.sin(time * 0.0028 + star.phase) * 0.22;
+      const opacity = star.opacity * strength * scrollOpacity * shimmer;
+      const radius = Math.max(0.4, star.size * layout.scale);
 
       if (star.bright) {
-        const spriteSize = Math.max(7, radius * 9);
-        context.globalAlpha = opacity * 0.6;
-        context.drawImage(sprites[star.color], x - spriteSize, y - spriteSize, spriteSize * 2, spriteSize * 2);
+        const spriteSize = Math.max(10, radius * 11);
+
+        context.globalAlpha = opacity * 0.8;
+        context.drawImage(
+          sprites[star.color],
+          x - spriteSize,
+          y - spriteSize,
+          spriteSize * 2,
+          spriteSize * 2
+        );
         context.globalAlpha = 1;
       }
 
@@ -592,7 +656,90 @@
       context.beginPath();
       context.arc(x, y, radius, 0, Math.PI * 2);
       context.fill();
+
+      // Bright four-point twinkles bring back the earlier star effect.
+      if (star.flare && opacity > 0.16) {
+        const size = Math.max(4, radius * 5);
+
+        context.strokeStyle = 'rgba(220,239,255,' + opacity * 0.62 + ')';
+        context.lineWidth = 0.75;
+        context.beginPath();
+        context.moveTo(x - size, y);
+        context.lineTo(x + size, y);
+        context.moveTo(x, y - size);
+        context.lineTo(x, y + size);
+        context.stroke();
+      }
     }
+
+    if (activeScene === 5) {
+      paintEventHorizon(layout, rawProgress, time);
+    }
+  }
+
+  // Stars converge first. A black centre and photon ring appear after.
+  function paintEventHorizon(layout, progress, time) {
+    if (progress < 0.38) {
+      return;
+    }
+
+    const opacity = ease((progress - 0.38) / 0.46);
+    const x = layout.centerX;
+    const y = layout.centerY;
+    const radius = Math.max(28, 99 * layout.scale);
+
+    if (isOverContent(x, y)) {
+      return;
+    }
+
+    context.save();
+    context.globalAlpha = opacity;
+    context.translate(x, y);
+    context.rotate(-0.34);
+
+    // Soft blue and warm-orange light circles around the dark centre.
+    const disk = context.createRadialGradient(
+      0, 0, radius * 0.8,
+      0, 0, radius * 2.7
+    );
+
+    disk.addColorStop(0, 'rgba(140,190,255,0.10)');
+    disk.addColorStop(0.55, 'rgba(102,163,248,0.12)');
+    disk.addColorStop(0.78, 'rgba(255,172,112,0.19)');
+    disk.addColorStop(1, 'rgba(255,181,130,0)');
+
+    context.fillStyle = disk;
+    context.beginPath();
+    context.ellipse(0, 0, radius * 2.8, radius * 1.25, 0, 0, Math.PI * 2);
+    context.fill();
+
+    context.rotate(0.34);
+
+    // No stars inside the event horizon.
+    context.shadowBlur = radius * 0.4;
+    context.shadowColor = '#010208';
+    context.fillStyle = '#01030a';
+    context.beginPath();
+    context.arc(0, 0, radius, 0, Math.PI * 2);
+    context.fill();
+
+    context.shadowBlur = radius * 0.24;
+    context.shadowColor = '#9bcfff';
+    context.strokeStyle = '#d8ecff';
+    context.lineWidth = Math.max(1.2, layout.scale * 5);
+    context.beginPath();
+    context.arc(0, 0, radius * 1.04, 0, Math.PI * 2);
+    context.stroke();
+
+    const angle = time * 0.0004;
+    const lightX = Math.cos(angle) * radius * 1.08;
+    const lightY = Math.sin(angle) * radius * 1.08;
+
+    context.fillStyle = '#ffe0b5';
+    context.beginPath();
+    context.arc(lightX, lightY, Math.max(2, radius * 0.05), 0, Math.PI * 2);
+    context.fill();
+    context.restore();
   }
 
   function render(time) {
