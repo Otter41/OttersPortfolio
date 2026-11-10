@@ -7,491 +7,491 @@
     return;
   }
 
-  const context = canvas.getContext('2d', { alpha: true });
+  const context = canvas.getContext('2d');
 
   if (!context) {
     return;
   }
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointer = window.matchMedia('(pointer: fine)');
-  const shapeCanvas = document.createElement('canvas');
-  const shapeContext = shapeCanvas.getContext('2d');
-  const shapePath = new Path2D(
-    'M 104 387 C 154 370 208 377 274 385 ' +
-    'C 331 343 367 300 441 271 ' +
-    'C 493 249 552 210 615 216 ' +
-    'C 627 201 643 186 659 181 ' +
-    'C 677 174 685 181 687 196 ' +
-    'C 724 172 763 173 796 190 ' +
-    'C 811 177 824 183 833 199 ' +
-    'C 852 207 865 220 883 242 ' +
-    'C 898 248 920 256 920 270 ' +
-    'Q 920 284 901 287 ' +
-    'C 880 292 862 290 840 298 ' +
-    'C 796 317 764 345 734 379 ' +
-    'C 706 413 647 439 593 451 ' +
-    'C 532 469 473 473 415 461 ' +
-    'C 365 450 321 446 294 431 ' +
-    'C 233 421 175 412 104 387 Z'
-  );
-
-  // Each particle has a place in the final picture.
-  // The shape is only used to position them. It never gets drawn.
-  const particleColors = [
-    [232, 243, 255],
-    [182, 224, 255],
-    [109, 189, 255],
-    [255, 212, 173],
-    [255, 169, 123],
-    [188, 171, 255]
-  ];
-
-  // Glows are rendered once and reused, so the whole thing stays lightweight.
-  const glowSprites = particleColors.map(color => {
-    const texture = document.createElement('canvas');
-    const textureContext = texture.getContext('2d');
-    const size = 72;
-
-    texture.width = size;
-    texture.height = size;
-
-    if (textureContext) {
-      const gradient = textureContext.createRadialGradient(36, 36, 0, 36, 36, 35);
-
-      gradient.addColorStop(0, 'rgba(' + color.join(',') + ',0.8)');
-      gradient.addColorStop(0.20, 'rgba(' + color.join(',') + ',0.27)');
-      gradient.addColorStop(1, 'rgba(' + color.join(',') + ',0)');
-
-      textureContext.fillStyle = gradient;
-      textureContext.fillRect(0, 0, size, size);
-    }
-
-    return texture;
-  });
-
-  const highlights = [
-    { x: 784, y: 236, radius: 2.8 },
-    { x: 914, y: 269, radius: 3.2 },
-    { x: 665, y: 190, radius: 2.2 },
-    { x: 828, y: 197, radius: 2.0 },
-    { x: 575, y: 305, radius: 2.4 },
-    { x: 448, y: 379, radius: 2.0 },
-    { x: 350, y: 505, radius: 2.6 },
-    { x: 667, y: 492, radius: 2.1 },
-    { x: 160, y: 389, radius: 2.0 }
-  ];
-
-  const whiskers = [
-    [[857, 271], [965, 246]],
-    [[864, 279], [980, 280]],
-    [[857, 287], [952, 313]]
-  ];
+  const sceneIds = ['top', 'work', 'about', 'stack', 'next', 'contact'];
+  const maskWidth = 720;
+  const maskHeight = 760;
+  const particleCount = window.innerWidth < 760 ? 3200 : 7600;
+  const masks = {};
+  const stars = [];
+  const backgroundStars = [];
 
   let width = 0;
   let height = 0;
-  let ratio = 1;
-  let scale = 1;
-  let centerX = 0;
-  let centerY = 0;
-  let particles = [];
-  let sky = [];
+  let pixelRatio = 1;
+  let activeScene = 0;
+  let sceneStart = 0;
   let animationId = null;
-  let startedAt = null;
   let lastFrame = 0;
-  let mouseX = 0;
-  let mouseY = 0;
-  let smoothX = 0;
-  let smoothY = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+  let pointerSmoothX = 0;
+  let pointerSmoothY = 0;
 
-  const duration = 3000;
-  const easeOut = value => 1 - Math.pow(1 - Math.min(1, value), 4);
+  // This is the same constellation throughout the page.
+  // The stars just find different places as you scroll.
+  const palette = [
+    [242, 246, 255],
+    [155, 204, 255],
+    [102, 182, 242],
+    [255, 198, 147],
+    [236, 226, 218],
+    [97, 211, 225],
+    [190, 167, 244]
+  ];
 
-  function randomBetween(min, max) {
+  const ease = value => {
+    const progress = Math.max(0, Math.min(1, value));
+    return progress * progress * (3 - 2 * progress);
+  };
+
+  function random(min, max) {
     return min + Math.random() * (max - min);
   }
 
-  function addParticle(x, y, size, glow, kind = 'body') {
-    // The warm stars are accents, not the whole palette.
-    const warm = Math.random() < 0.16;
-    const choices = warm ? [3, 4] : [0, 1, 2, 5];
-    const colorIndex = choices[Math.floor(Math.random() * choices.length)];
-    const color = particleColors[colorIndex];
-    const alpha = randomBetween(0.42, 0.97);
+  function ellipse(ctx, x, y, radiusX, radiusY, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.ellipse(x, y, radiusX, radiusY, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-    particles.push({
-      x,
-      y,
-      size,
-      glow,
-      kind,
-      color,
-      colorIndex,
-      alpha,
-      fromX: randomBetween(-120, 1120),
-      fromY: randomBetween(-130, 780),
-      phase: randomBetween(0, Math.PI * 2)
+  function strokePath(ctx, points, color, size) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+
+    points.forEach((point, index) => {
+      if (index === 0) {
+        ctx.moveTo(point[0], point[1]);
+      } else {
+        ctx.lineTo(point[0], point[1]);
+      }
     });
+
+    ctx.stroke();
   }
 
-  function addCurve(points, count, spread, glowChance) {
-    for (let index = 0; index < count; index++) {
-      const segment = Math.random() * (points.length - 1);
-      const left = Math.floor(segment);
-      const right = Math.min(points.length - 1, left + 1);
-      const amount = segment - left;
+  // The mask is based on the uploaded front-facing otter:
+  // round face, soft cheeks, shiny eyes, chest and a splash of water.
+  function drawOtter(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
 
-      const x = points[left][0] * (1 - amount) + points[right][0] * amount;
-      const y = points[left][1] * (1 - amount) + points[right][1] * amount;
+    // Torso and ears sit behind the face.
+    ellipse(ctx, 360, 545, 218, 215, '#9d7669');
+    ellipse(ctx, 171, 244, 67, 88, '#88655a');
+    ellipse(ctx, 547, 242, 67, 88, '#88655a');
+    ellipse(ctx, 173, 245, 40, 57, '#604846');
+    ellipse(ctx, 546, 243, 40, 57, '#604846');
 
-      addParticle(
-        x + randomBetween(-spread, spread),
-        y + randomBetween(-spread, spread),
-        randomBetween(0.45, 1.85),
-        Math.random() < glowChance,
-        'trail'
-      );
-    }
+    // The head has a wide, rounded silhouette.
+    ellipse(ctx, 359, 286, 234, 237, '#a88475');
+    ellipse(ctx, 359, 200, 173, 120, '#b08a7c');
+
+    // The original otter has two large, light cheeks.
+    ellipse(ctx, 257, 375, 128, 104, '#e8dac8');
+    ellipse(ctx, 460, 374, 128, 104, '#e9ddcb');
+    ellipse(ctx, 357, 389, 116, 98, '#f1e4d1');
+
+    // Make the eyes dark enough to read between the brighter stars.
+    ellipse(ctx, 269, 269, 41, 61, '#342c31');
+    ellipse(ctx, 452, 267, 42, 61, '#342c31');
+    ellipse(ctx, 260, 241, 12, 15, '#f6f3eb');
+    ellipse(ctx, 445, 239, 12, 15, '#f6f3eb');
+
+    // Nose, mouth and chin.
+    ellipse(ctx, 359, 342, 70, 42, '#3b3235');
+    ellipse(ctx, 360, 396, 45, 30, '#6c3d42');
+    ellipse(ctx, 360, 384, 24, 12, '#f0c0ab');
+    ellipse(ctx, 359, 430, 95, 38, '#ded3c6');
+
+    // Light fur below the face.
+    ellipse(ctx, 355, 569, 116, 168, '#e8d9c8');
+    ellipse(ctx, 356, 618, 78, 110, '#f2e3d3');
+
+    // Whiskers, kept delicate instead of hard cartoon strokes.
+    const whiskers = [
+      [[256, 377], [165, 350], [97, 353]],
+      [[250, 401], [157, 398], [89, 422]],
+      [[254, 423], [175, 450], [119, 479]],
+      [[460, 377], [559, 351], [629, 352]],
+      [[464, 399], [569, 399], [638, 421]],
+      [[461, 424], [553, 450], [613, 478]]
+    ];
+
+    whiskers.forEach(points => {
+      strokePath(ctx, points, '#ddd9cf', 4);
+    });
+
+    // Rippling turquoise water along the bottom of the picture.
+    ellipse(ctx, 360, 699, 330, 49, '#2a99b5');
+    ellipse(ctx, 356, 688, 269, 30, '#7ad7d6');
+    strokePath(ctx, [[86, 695], [197, 707], [329, 716], [486, 706], [640, 688]], '#a4eff2', 10);
+    strokePath(ctx, [[129, 734], [232, 749], [365, 739], [489, 751], [592, 730]], '#3688a5', 12);
+    ellipse(ctx, 98, 633, 13, 33, '#68d3df');
+    ellipse(ctx, 625, 618, 16, 36, '#68d3df');
+    ellipse(ctx, 658, 671, 13, 19, '#5bcede');
+    ellipse(ctx, 79, 677, 10, 15, '#6bd7e1');
   }
 
-  function makeOtter() {
-    particles = [];
+  function drawCode(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
+    ctx.fillStyle = '#d3dff9';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 230px monospace';
+    ctx.fillText('</>', 360, 385);
+  }
 
-    if (!shapeContext) {
-      return;
+  function drawPaw(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
+    ellipse(ctx, 357, 470, 180, 146, '#c5b7ee');
+    ellipse(ctx, 178, 284, 64, 90, '#f4eefc');
+    ellipse(ctx, 299, 223, 65, 94, '#a8d5fa');
+    ellipse(ctx, 429, 220, 65, 94, '#f4c69c');
+    ellipse(ctx, 546, 282, 64, 90, '#a6e4ec');
+  }
+
+  function drawOrbit(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
+    ctx.strokeStyle = '#bcdfff';
+    ctx.lineWidth = 17;
+
+    for (const angle of [-0.7, 0.7, 1.55]) {
+      ctx.save();
+      ctx.translate(360, 380);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 265, 105, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
     }
 
-    // More stars where the light naturally catches the body.
-    // No solid silhouettes, outlines, or visible tracing lines.
+    ellipse(ctx, 360, 380, 67, 67, '#f4e6f9');
+    ellipse(ctx, 133, 280, 28, 28, '#9bccf7');
+    ellipse(ctx, 597, 485, 25, 25, '#e9ad84');
+  }
+
+  function drawCloud(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
+    ellipse(ctx, 261, 387, 130, 118, '#b1d8f5');
+    ellipse(ctx, 374, 318, 164, 145, '#f1f5fc');
+    ellipse(ctx, 495, 394, 130, 112, '#9dd4ec');
+    ctx.fillStyle = '#c5e8f7';
+    ctx.fillRect(195, 393, 362, 107);
+
+    // A shield in the cloud for the cloud-security direction.
+    ctx.fillStyle = '#90c7f2';
+    ctx.beginPath();
+    ctx.moveTo(361, 326);
+    ctx.lineTo(441, 354);
+    ctx.lineTo(433, 443);
+    ctx.quadraticCurveTo(416, 490, 361, 521);
+    ctx.quadraticCurveTo(308, 490, 287, 443);
+    ctx.lineTo(282, 353);
+    ctx.closePath();
+    ctx.fill();
+
+    strokePath(ctx, [[322, 424], [351, 452], [406, 391]], '#f5f9ff', 16);
+  }
+
+  function drawSpark(ctx) {
+    ctx.clearRect(0, 0, maskWidth, maskHeight);
+    ctx.save();
+    ctx.translate(360, 380);
+
+    for (let index = 0; index < 10; index++) {
+      ctx.rotate(Math.PI / 5);
+      ellipse(ctx, 0, -165, 35, 126, index % 3 === 0 ? '#f6d3af' : '#b2cbfb');
+    }
+
+    ellipse(ctx, 0, 0, 95, 95, '#f8f2ff');
+    ctx.restore();
+  }
+
+  const drawFunctions = [
+    drawOtter,
+    drawCode,
+    drawPaw,
+    drawOrbit,
+    drawCloud,
+    drawSpark
+  ];
+
+  function chooseColor(red, green, blue) {
+    if (green > red * 1.12 && blue > red * 1.13) {
+      return 5;
+    }
+
+    if (red > blue * 1.21 && red > green * 1.09) {
+      return 3;
+    }
+
+    if (red < 100 && green < 100 && blue < 105) {
+      return 6;
+    }
+
+    if (red > 216 && green > 210 && blue > 202) {
+      return 0;
+    }
+
+    return Math.floor(random(0, 3));
+  }
+
+  function makeMask(drawFunction) {
+    const offscreen = document.createElement('canvas');
+    offscreen.width = maskWidth;
+    offscreen.height = maskHeight;
+
+    const ctx = offscreen.getContext('2d', { willReadFrequently: true });
+
+    if (!ctx) {
+      return [];
+    }
+
+    drawFunction(ctx);
+
+    const pixels = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
+    const positions = [];
     let attempts = 0;
 
-    while (particles.length < 4300 && attempts < 42000) {
+    while (positions.length < particleCount && attempts < particleCount * 85) {
       attempts++;
 
-      const x = randomBetween(100, 925);
-      const y = randomBetween(176, 477);
+      const x = Math.floor(random(10, maskWidth - 10));
+      const y = Math.floor(random(12, maskHeight - 10));
+      const pixelIndex = (y * maskWidth + x) * 4;
+      const alpha = pixels[pixelIndex + 3];
 
-      if (!shapeContext.isPointInPath(shapePath, x, y)) {
+      if (alpha < 50) {
         continue;
       }
 
-      const centralLight = Math.exp(
-        -Math.pow((x - 550) / 195, 2) -
-        Math.pow((y - 344) / 100, 2)
-      );
+      const red = pixels[pixelIndex];
+      const green = pixels[pixelIndex + 1];
+      const blue = pixels[pixelIndex + 2];
+      const darkFeature = red < 95 && green < 95 && blue < 100;
 
-      const faceLight = Math.exp(
-        -Math.pow((x - 792) / 94, 2) -
-        Math.pow((y - 262) / 67, 2)
-      );
-
-      const density = 0.52 + centralLight * 0.38 + faceLight * 0.22;
-
-      if (Math.random() > density) {
+      if (darkFeature && Math.random() > 0.21) {
         continue;
       }
 
-      const glow = Math.random() < 0.032 + centralLight * 0.08;
-      const size = glow ? randomBetween(1.45, 3.2) : randomBetween(0.35, 1.28);
-
-      addParticle(x, y, size, glow);
-    }
-
-    // Extra star currents give the silhouette a galactic texture.
-    addCurve(
-      [[112, 390], [215, 387], [322, 375], [422, 327], [536, 292], [659, 260], [809, 248], [916, 270]],
-      670,
-      17,
-      0.07
-    );
-
-    addCurve(
-      [[244, 404], [342, 430], [451, 458], [576, 445], [691, 416], [785, 335], [889, 282]],
-      490,
-      12,
-      0.06
-    );
-
-    // Ears, paws and whiskers need their own little constellations.
-    addCurve([[638, 203], [660, 178], [683, 192]], 74, 3, 0.12);
-    addCurve([[796, 191], [817, 181], [838, 201]], 74, 3, 0.12);
-    addCurve([[384, 442], [355, 488], [348, 507], [375, 511], [418, 458]], 120, 3, 0.10);
-    addCurve([[646, 388], [637, 445], [651, 491], [686, 494], [691, 455], [716, 394]], 146, 3, 0.10);
-
-    whiskers.forEach(line => addCurve(line, 64, 1.4, 0.09));
-
-    // A loose spiral of stars winds through the body.
-    // It gives the otter a galaxy inside its silhouette.
-    for (let index = 0; index < 950; index++) {
-      const angle = randomBetween(0, Math.PI * 5);
-      const radius = 12 + angle * 8.2;
-      const x = 551 + Math.cos(angle) * radius * 1.15 + randomBetween(-10, 10);
-      const y = 347 + Math.sin(angle) * radius * 0.6 + randomBetween(-7, 7);
-
-      if (!shapeContext.isPointInPath(shapePath, x, y)) {
-        continue;
-      }
-
-      addParticle(
+      positions.push({
         x,
         y,
-        randomBetween(0.8, 2.1),
-        Math.random() < 0.13,
-        'spiral'
-      );
+        color: chooseColor(red, green, blue),
+        opacity: darkFeature ? 0.22 : random(0.5, 0.98)
+      });
     }
 
-    // A few warm stars keep the artwork from feeling flat blue.
-    for (let index = 0; index < 440; index++) {
-      const angle = randomBetween(0, Math.PI * 2);
-      const distance = Math.sqrt(Math.random());
+    return positions;
+  }
 
-      addParticle(
-        565 + Math.cos(angle) * distance * 138,
-        345 + Math.sin(angle) * distance * 83,
-        randomBetween(0.5, 1.7),
-        Math.random() < 0.12,
-        'core'
-      );
-    }
-
-    highlights.forEach(point => {
-      for (let index = 0; index < 18; index++) {
-        addParticle(
-          point.x + randomBetween(-8, 8),
-          point.y + randomBetween(-8, 8),
-          randomBetween(0.8, 2.25),
-          index % 4 === 0,
-          'feature'
-        );
-      }
+  function buildMasks() {
+    drawFunctions.forEach((drawing, index) => {
+      masks[index] = makeMask(drawing);
     });
   }
 
-  function makeSky() {
-    sky = [];
+  function makeGlowSprite(color) {
+    const texture = document.createElement('canvas');
+    const ctx = texture.getContext('2d');
+    texture.width = 64;
+    texture.height = 64;
 
-    const count = Math.min(480, Math.round(width * height / 2700));
+    if (!ctx) {
+      return texture;
+    }
 
-    for (let index = 0; index < count; index++) {
-      sky.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        size: randomBetween(0.3, 1.35),
-        alpha: randomBetween(0.12, 0.7),
-        phase: randomBetween(0, Math.PI * 2),
-        warm: Math.random() < 0.15
+    const glow = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    glow.addColorStop(0, 'rgba(' + color.join(',') + ',0.75)');
+    glow.addColorStop(0.20, 'rgba(' + color.join(',') + ',0.25)');
+    glow.addColorStop(1, 'rgba(' + color.join(',') + ',0)');
+
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, 64, 64);
+
+    return texture;
+  }
+
+  const sprites = palette.map(makeGlowSprite);
+
+  function makeStars() {
+    for (let index = 0; index < particleCount; index++) {
+      const initial = masks[0][index % masks[0].length];
+
+      stars.push({
+        x: random(-150, maskWidth + 150),
+        y: random(-150, maskHeight + 150),
+        fromX: random(-150, maskWidth + 150),
+        fromY: random(-150, maskHeight + 150),
+        toX: initial.x,
+        toY: initial.y,
+        color: initial.color,
+        fromColor: initial.color,
+        toColor: initial.color,
+        opacity: initial.opacity,
+        fromOpacity: 0,
+        toOpacity: initial.opacity,
+        size: random(0.4, 1.6),
+        bright: index % 21 === 0,
+        phase: random(0, Math.PI * 2)
+      });
+    }
+
+    for (let index = 0; index < 180; index++) {
+      backgroundStars.push({
+        x: Math.random(),
+        y: Math.random(),
+        size: random(0.4, 1.6),
+        opacity: random(0.14, 0.60),
+        phase: random(0, Math.PI * 2)
       });
     }
   }
 
   function resize() {
-    const bounds = canvas.getBoundingClientRect();
+    width = Math.max(1, window.innerWidth);
+    height = Math.max(1, window.innerHeight);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
 
-    width = Math.max(1, bounds.width);
-    height = Math.max(1, bounds.height);
-    ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-    const compact = width < 780;
-    scale = Math.min(
-      width * (compact ? 1.13 : 0.82) / 1000,
-      height * (compact ? 0.9 : 0.83) / 640
-    );
-
-    centerX = width * (compact ? 0.51 : 0.52);
-    centerY = height * (compact ? 0.47 : 0.51);
-
-    makeSky();
-    draw(performance.now());
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   }
 
-  function getPosition(particle, formation, time) {
-    const x = particle.fromX + (particle.x - particle.fromX) * formation;
-    const y = particle.fromY + (particle.y - particle.fromY) * formation;
+  function sceneLayout(index) {
+    const mobile = width < 760;
 
-    const ripple = reducedMotion.matches
-      ? 0
-      : Math.sin(time * 0.0006 + particle.phase) * 1.25;
+    const centerX = index === 0
+      ? width * (mobile ? 0.51 : 0.51)
+      : width * (mobile ? 0.73 : index % 2 === 0 ? 0.22 : 0.77);
+
+    const centerY = height * (mobile ? 0.53 : 0.53);
+    const maxWidth = width * (mobile ? 0.75 : index === 0 ? 0.44 : 0.38);
+    const maxHeight = height * (mobile ? 0.55 : index === 0 ? 0.70 : 0.64);
 
     return {
-      x: centerX + (x - 505 + ripple) * scale + smoothX,
-      y: centerY + (y - 324 - ripple) * scale + smoothY
+      centerX,
+      centerY,
+      scale: Math.min(maxWidth / maskWidth, maxHeight / maskHeight)
     };
   }
 
-  function drawNebula() {
-    const radius = Math.min(width, height) * 0.57;
-    const glow = context.createRadialGradient(
-      centerX,
-      centerY,
-      0,
-      centerX,
-      centerY,
-      radius
-    );
+  function updateScene() {
+    let next = 0;
 
-    glow.addColorStop(0, 'rgba(93, 127, 194, 0.2)');
-    glow.addColorStop(0.35, 'rgba(55, 82, 139, 0.09)');
-    glow.addColorStop(1, 'rgba(10, 15, 30, 0)');
+    for (let index = 1; index < sceneIds.length; index++) {
+      const element = document.getElementById(sceneIds[index]);
 
-    context.fillStyle = glow;
-    context.fillRect(0, 0, width, height);
-
-    // Soft starlight behind the center and face.
-    drawGlow(
-      centerX + (551 - 505) * scale,
-      centerY + (344 - 324) * scale,
-      165 * scale,
-      [170, 193, 255],
-      0.10
-    );
-
-    drawGlow(
-      centerX + (787 - 505) * scale,
-      centerY + (259 - 324) * scale,
-      112 * scale,
-      [138, 200, 255],
-      0.11
-    );
-  }
-
-  function drawBackground(time) {
-    for (const star of sky) {
-      const twinkle = reducedMotion.matches
-        ? 0.85
-        : 0.68 + Math.sin(time * 0.0009 + star.phase) * 0.28;
-
-      const alpha = star.alpha * twinkle;
-      context.fillStyle = star.warm
-        ? 'rgba(255, 186, 136, ' + alpha + ')'
-        : 'rgba(194, 221, 255, ' + alpha + ')';
-
-      context.fillRect(star.x, star.y, star.size, star.size);
-    }
-  }
-
-  function drawGlow(x, y, radius, color, opacity) {
-    const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
-
-    gradient.addColorStop(0, 'rgba(' + color.join(',') + ',' + opacity + ')');
-    gradient.addColorStop(0.21, 'rgba(' + color.join(',') + ',' + opacity * 0.31 + ')');
-    gradient.addColorStop(1, 'rgba(' + color.join(',') + ',0)');
-
-    context.fillStyle = gradient;
-    context.beginPath();
-    context.arc(x, y, radius, 0, Math.PI * 2);
-    context.fill();
-  }
-
-  function drawParticles(formation, time) {
-    smoothX += (mouseX - smoothX) * 0.05;
-    smoothY += (mouseY - smoothY) * 0.05;
-
-    // Fewer stars on smaller screens keeps the motion smooth.
-    const step = width < 760 ? 2 : 1;
-
-    for (let index = 0; index < particles.length; index += step) {
-      const particle = particles[index];
-      const point = getPosition(particle, formation, time);
-
-      if (particle.glow) {
-        const radius = particle.size * scale * 5 + 6;
-        const sprite = glowSprites[particle.colorIndex];
-
-        context.globalAlpha = 0.42;
-        context.drawImage(sprite, point.x - radius, point.y - radius, radius * 2, radius * 2);
-        context.globalAlpha = 1;
+      if (element && element.getBoundingClientRect().top < height * 0.65) {
+        next = index;
       }
-
-      const shimmer = reducedMotion.matches
-        ? 1
-        : 0.9 + Math.sin(time * 0.002 + particle.phase) * 0.10;
-
-      context.fillStyle = 'rgba(' + particle.color.join(',') + ',' + particle.alpha * shimmer + ')';
-      context.beginPath();
-      context.arc(
-        point.x,
-        point.y,
-        Math.max(0.33, particle.size * scale),
-        0,
-        Math.PI * 2
-      );
-      context.fill();
     }
-  }
 
-  function drawBigStars(formation, time) {
-    if (formation < 0.68) {
+    if (next === activeScene) {
       return;
     }
 
-    const opacity = Math.min(1, (formation - 0.68) / 0.32);
+    for (let index = 0; index < stars.length; index++) {
+      const star = stars[index];
+      const target = masks[next][index % masks[next].length];
 
-    for (const star of highlights) {
-      const point = getPosition({
-        x: star.x,
-        y: star.y,
-        fromX: star.x,
-        fromY: star.y,
-        phase: 0
-      }, 1, time);
+      star.fromX = star.x;
+      star.fromY = star.y;
+      star.fromColor = star.color;
+      star.fromOpacity = star.opacity;
+      star.toX = target.x;
+      star.toY = target.y;
+      star.toColor = target.color;
+      star.toOpacity = target.opacity;
+    }
 
-      const radius = star.radius * Math.max(0.65, scale);
+    activeScene = next;
+    sceneStart = performance.now();
+  }
 
-      drawGlow(point.x, point.y, radius * 14, [172, 209, 255], opacity * 0.33);
+  function paintBackground(time) {
+    for (const star of backgroundStars) {
+      const shimmer = reducedMotion.matches
+        ? 1
+        : 0.76 + Math.sin(time * 0.0007 + star.phase) * 0.24;
 
-      context.fillStyle = 'rgba(245, 250, 255,' + opacity + ')';
-      context.beginPath();
-      context.arc(point.x, point.y, radius, 0, Math.PI * 2);
-      context.fill();
-
-      context.strokeStyle = 'rgba(196, 232, 255,' + opacity * 0.35 + ')';
-      context.lineWidth = 0.7;
-      context.beginPath();
-      context.moveTo(point.x - radius * 4, point.y);
-      context.lineTo(point.x + radius * 4, point.y);
-      context.moveTo(point.x, point.y - radius * 4);
-      context.lineTo(point.x, point.y + radius * 4);
-      context.stroke();
+      context.fillStyle = 'rgba(201,222,255,' + star.opacity * shimmer + ')';
+      context.fillRect(star.x * width, star.y * height, star.size, star.size);
     }
   }
 
-  function draw(time) {
-    context.clearRect(0, 0, width, height);
-    drawNebula();
-    drawBackground(time);
+  function paintConstellation(time) {
+    const duration = activeScene === 0 ? 2900 : 1600;
+    const progress = reducedMotion.matches
+      ? 1
+      : ease((time - sceneStart) / duration);
 
-    const elapsed = startedAt === null ? duration : time - startedAt;
-    const progress = reducedMotion.matches ? 1 : Math.min(1, elapsed / duration);
-    const formation = easeOut(progress);
+    const layout = sceneLayout(activeScene);
+    const calm = activeScene !== 0;
+    const strength = calm ? 0.52 : 1;
 
-    drawParticles(formation, time);
-    drawBigStars(formation, time);
+    pointerSmoothX += (pointerX - pointerSmoothX) * 0.035;
+    pointerSmoothY += (pointerY - pointerSmoothY) * 0.035;
+
+    for (const star of stars) {
+      star.x = star.fromX + (star.toX - star.fromX) * progress;
+      star.y = star.fromY + (star.toY - star.fromY) * progress;
+      star.opacity = star.fromOpacity + (star.toOpacity - star.fromOpacity) * progress;
+
+      if (progress >= 1) {
+        star.color = star.toColor;
+      }
+
+      const drift = reducedMotion.matches
+        ? 0
+        : Math.sin(time * 0.00053 + star.phase) * 0.65;
+
+      const x = layout.centerX + (star.x - maskWidth / 2 + drift) * layout.scale + pointerSmoothX;
+      const y = layout.centerY + (star.y - maskHeight / 2 + drift) * layout.scale + pointerSmoothY;
+      const color = palette[star.color];
+      const opacity = star.opacity * strength;
+      const radius = Math.max(0.35, star.size * layout.scale);
+
+      if (star.bright) {
+        const spriteSize = Math.max(7, radius * 9);
+        context.globalAlpha = opacity * 0.6;
+        context.drawImage(sprites[star.color], x - spriteSize, y - spriteSize, spriteSize * 2, spriteSize * 2);
+        context.globalAlpha = 1;
+      }
+
+      context.fillStyle = 'rgba(' + color.join(',') + ',' + opacity + ')';
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fill();
+    }
   }
 
-  function frame(time) {
+  function render(time) {
     animationId = null;
 
     if (document.hidden) {
       return;
     }
 
-    if (startedAt === null) {
-      startedAt = time;
-    }
-
-    // Around 24 fps is plenty for slow-moving stars.
-    if (time - lastFrame >= 40 || reducedMotion.matches) {
-      draw(time);
+    if (time - lastFrame > 34 || reducedMotion.matches) {
+      context.clearRect(0, 0, width, height);
+      paintBackground(time);
+      paintConstellation(time);
       lastFrame = time;
     }
 
     if (!reducedMotion.matches) {
-      animationId = requestAnimationFrame(frame);
+      animationId = requestAnimationFrame(render);
     }
   }
 
@@ -502,41 +502,48 @@
     }
 
     if (!document.hidden) {
-      animationId = requestAnimationFrame(frame);
+      animationId = requestAnimationFrame(render);
     }
   }
 
-  let resizeFrame = null;
+  // Passive listeners keep page scrolling responsive.
+  let scrollQueued = false;
 
-  window.addEventListener('resize', () => {
-    if (resizeFrame !== null) {
-      cancelAnimationFrame(resizeFrame);
+  window.addEventListener('scroll', () => {
+    if (scrollQueued) {
+      return;
     }
 
-    resizeFrame = requestAnimationFrame(() => {
-      resizeFrame = null;
-      resize();
+    scrollQueued = true;
+
+    requestAnimationFrame(() => {
+      scrollQueued = false;
+      updateScene();
     });
   }, { passive: true });
 
-  if (finePointer.matches) {
-    canvas.closest('.galaxy-hero')?.addEventListener('pointermove', event => {
-      mouseX = (event.clientX / window.innerWidth - 0.5) * 12;
-      mouseY = (event.clientY / window.innerHeight - 0.5) * 9;
+  window.addEventListener('resize', () => {
+    resize();
+    updateScene();
+  }, { passive: true });
+
+  if (window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('pointermove', event => {
+      pointerX = (event.clientX / width - 0.5) * 10;
+      pointerY = (event.clientY / height - 0.5) * 8;
     }, { passive: true });
   }
 
   document.addEventListener('visibilitychange', start);
 
   if (typeof reducedMotion.addEventListener === 'function') {
-    reducedMotion.addEventListener('change', () => {
-      startedAt = null;
-      start();
-    });
+    reducedMotion.addEventListener('change', start);
   }
 
-  makeOtter();
-  startedAt = performance.now();
+  buildMasks();
+  makeStars();
   resize();
+  sceneStart = performance.now();
+  updateScene();
   start();
 })();
