@@ -17,7 +17,7 @@
   const sceneIds = ['top', 'work', 'about', 'stack', 'next', 'contact'];
   const maskWidth = 720;
   const maskHeight = 760;
-  const particleCount = window.innerWidth < 760 ? 3200 : 7600;
+  const particleCount = window.innerWidth < 760 ? 2700 : 6200;
   const masks = {};
   const stars = [];
   const backgroundStars = [];
@@ -27,12 +27,18 @@
   let pixelRatio = 1;
   let activeScene = 0;
   let sceneStart = 0;
+  let firstEntrance = true;
   let animationId = null;
   let lastFrame = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-  let pointerSmoothX = 0;
-  let pointerSmoothY = 0;
+  let pointerX = -1000;
+  let pointerY = -1000;
+  let pointerActive = false;
+  let scrollScatter = 0;
+  let lastScroll = 0;
+  let lastScrollPosition = window.scrollY;
+  let scrollDirection = 1;
+  let protectedZones = [];
+  let zonesQueued = false;
   let currentLayout = null;
   let previousLayout = null;
 
@@ -190,18 +196,35 @@
     strokePath(ctx, [[322, 424], [351, 452], [406, 391]], '#f5f9ff', 16);
   }
 
-  function drawSpark(ctx) {
+  // Stars orbit a dark core in the final scene.
+  function drawBlackHole(ctx) {
     ctx.clearRect(0, 0, maskWidth, maskHeight);
     ctx.save();
     ctx.translate(360, 380);
+    ctx.rotate(-0.34);
 
-    for (let index = 0; index < 10; index++) {
-      ctx.rotate(Math.PI / 5);
-      ellipse(ctx, 0, -165, 35, 126, index % 3 === 0 ? '#f6d3af' : '#b2cbfb');
-    }
+    const rings = [
+      { x: 226, y: 109, width: 31, color: '#98cfff' },
+      { x: 185, y: 87, width: 27, color: '#f1c6a2' },
+      { x: 151, y: 72, width: 18, color: '#afaaff' },
+      { x: 125, y: 62, width: 10, color: '#f4f8ff' }
+    ];
 
-    ellipse(ctx, 0, 0, 95, 95, '#f8f2ff');
+    rings.forEach(ring => {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, ring.x, ring.y, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = ring.color;
+      ctx.lineWidth = ring.width;
+      ctx.stroke();
+    });
+
     ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(360, 380, 101, 0, Math.PI * 2);
+    ctx.strokeStyle = '#ecf1ff';
+    ctx.lineWidth = 10;
+    ctx.stroke();
   }
 
   const drawFunctions = [
@@ -210,7 +233,7 @@
     drawPaw,
     drawOrbit,
     drawCloud,
-    drawSpark
+    drawBlackHole
   ];
 
   function chooseColor(red, green, blue) {
@@ -333,13 +356,18 @@
         opacity: initial.opacity,
         fromOpacity: 0,
         toOpacity: initial.opacity,
-        size: random(0.4, 1.6),
-        bright: index % 21 === 0,
-        phase: random(0, Math.PI * 2)
+        size: random(0.4, 2.1),
+        bright: index % 12 === 0,
+        flare: index % 67 === 0,
+        phase: random(0, Math.PI * 2),
+        scatterAngle: random(0, Math.PI * 2),
+        scatterDistance: random(125, 320),
+        pushX: 0,
+        pushY: 0
       });
     }
 
-    for (let index = 0; index < 180; index++) {
+    for (let index = 0; index < 270; index++) {
       backgroundStars.push({
         x: Math.random(),
         y: Math.random(),
@@ -363,19 +391,106 @@
   function sceneLayout(index) {
     const mobile = width < 760;
 
-    const centerX = index === 0
-      ? width * (mobile ? 0.51 : 0.51)
-      : width * (mobile ? 0.73 : index % 2 === 0 ? 0.22 : 0.77);
+    if (index === 0) {
+      return {
+        centerX: width * 0.5,
+        centerY: height * 0.52,
+        scale: Math.min(
+          width * (mobile ? 0.67 : 0.44) / maskWidth,
+          height * 0.71 / maskHeight
+        )
+      };
+    }
 
-    const centerY = height * (mobile ? 0.53 : 0.53);
-    const maxWidth = width * (mobile ? 0.75 : index === 0 ? 0.44 : 0.38);
-    const maxHeight = height * (mobile ? 0.55 : index === 0 ? 0.70 : 0.64);
+    if (index === 5) {
+      return {
+        centerX: width * (mobile ? 0.5 : 0.79),
+        centerY: height * (mobile ? 0.24 : 0.49),
+        scale: Math.min(
+          width * (mobile ? 0.72 : 0.34) / maskWidth,
+          height * (mobile ? 0.39 : 0.60) / maskHeight
+        )
+      };
+    }
+
+    const centers = [0.5, 0.83, 0.18, 0.82, 0.80];
 
     return {
-      centerX,
-      centerY,
-      scale: Math.min(maxWidth / maskWidth, maxHeight / maskHeight)
+      centerX: width * (mobile ? 0.76 : centers[index]),
+      centerY: height * (mobile ? 0.52 : 0.51),
+      scale: Math.min(
+        width * (mobile ? 0.53 : 0.35) / maskWidth,
+        height * 0.55 / maskHeight
+      )
     };
+  }
+
+  // Find the text and cards currently on screen.
+  // These areas stay clear even when the constellation breaks apart.
+  function refreshProtectedZones() {
+    const selectors = [
+      '.site-header',
+      '.galaxy-title',
+      '.galaxy-footer',
+      '.statement-grid',
+      '.section-heading',
+      '.feature-visual',
+      '.feature-copy',
+      '.archive-heading',
+      '.archive-project',
+      '.archive-more',
+      '.about-copy',
+      '.about-layout > .section-label',
+      '.skill-column',
+      '.next-copy',
+      '.journey',
+      '.contact-inner > *',
+      '.footer-inner',
+      '.project-dialog[open]'
+    ];
+
+    protectedZones = [];
+
+    document.querySelectorAll(selectors.join(',')).forEach(element => {
+      const rect = element.getBoundingClientRect();
+
+      if (rect.bottom < 0 || rect.top > height) {
+        return;
+      }
+
+      const padding = width < 760 ? 20 : 33;
+
+      protectedZones.push({
+        left: rect.left - padding,
+        top: rect.top - padding,
+        right: rect.right + padding,
+        bottom: rect.bottom + padding
+      });
+    });
+  }
+
+  function queueZoneRefresh() {
+    if (zonesQueued) {
+      return;
+    }
+
+    zonesQueued = true;
+
+    requestAnimationFrame(() => {
+      zonesQueued = false;
+      refreshProtectedZones();
+    });
+  }
+
+  function isOverContent(x, y) {
+    for (const zone of protectedZones) {
+      if (x >= zone.left && x <= zone.right &&
+          y >= zone.top && y <= zone.bottom) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function updateScene() {
@@ -384,7 +499,7 @@
     for (let index = 1; index < sceneIds.length; index++) {
       const element = document.getElementById(sceneIds[index]);
 
-      if (element && element.getBoundingClientRect().top < height * 0.65) {
+      if (element && element.getBoundingClientRect().top < height * 0.72) {
         next = index;
       }
     }
@@ -393,6 +508,7 @@
       return;
     }
 
+    // Don't jump if someone scrolls past two sections quickly.
     previousLayout = currentLayout || sceneLayout(activeScene);
 
     for (let index = 0; index < stars.length; index++) {
@@ -410,7 +526,9 @@
     }
 
     activeScene = next;
+    firstEntrance = false;
     sceneStart = performance.now();
+    scrollScatter = 1;
   }
 
   function paintBackground(time) {
@@ -419,16 +537,35 @@
         ? 1
         : 0.76 + Math.sin(time * 0.0007 + star.phase) * 0.24;
 
+      const x = star.x * width;
+      const y = star.y * height;
+
+      if (isOverContent(x, y)) {
+        continue;
+      }
+
       context.fillStyle = 'rgba(201,222,255,' + star.opacity * shimmer + ')';
-      context.fillRect(star.x * width, star.y * height, star.size, star.size);
+      context.fillRect(x, y, star.size, star.size);
     }
   }
 
   function paintConstellation(time) {
-    const duration = activeScene === 0 ? 2900 : 1600;
-    const progress = reducedMotion.matches
+    const duration = firstEntrance && activeScene === 0 ? 1450 : 540;
+    const rawProgress = reducedMotion.matches
       ? 1
-      : ease((time - sceneStart) / duration);
+      : Math.min(1, (time - sceneStart) / duration);
+    const progress = ease(rawProgress);
+
+    // Scattering is immediate while scrolling, then clears quickly.
+    if (!reducedMotion.matches && time - lastScroll < 100) {
+      scrollScatter = Math.min(1, scrollScatter + 0.15);
+    } else {
+      scrollScatter *= 0.80;
+    }
+
+    if (scrollScatter < 0.002) {
+      scrollScatter = 0;
+    }
 
     const targetLayout = sceneLayout(activeScene);
     const originLayout = previousLayout || targetLayout;
@@ -440,15 +577,27 @@
 
     currentLayout = layout;
 
-    const calm = activeScene !== 0;
-    const strength = calm ? 0.43 : 1;
-
-    pointerSmoothX += (pointerX - pointerSmoothX) * 0.035;
-    pointerSmoothY += (pointerY - pointerSmoothY) * 0.035;
+    const strength = activeScene === 0 ? 1 : activeScene === 5 ? 0.92 : 0.60;
+    const scrollOpacity = 1 - scrollScatter * 0.76;
+    const pointerRadius = width < 760 ? 0 : 160;
 
     for (const star of stars) {
-      star.x = star.fromX + (star.toX - star.fromX) * progress;
-      star.y = star.fromY + (star.toY - star.fromY) * progress;
+      // At the end they collide, then settle into the accretion disk.
+      if (activeScene === 5 && rawProgress < 1 && !reducedMotion.matches) {
+        if (rawProgress < 0.38) {
+          const collapse = ease(rawProgress / 0.38);
+          star.x = star.fromX + (360 - star.fromX) * collapse;
+          star.y = star.fromY + (380 - star.fromY) * collapse;
+        } else {
+          const expand = ease((rawProgress - 0.38) / 0.62);
+          star.x = 360 + (star.toX - 360) * expand;
+          star.y = 380 + (star.toY - 380) * expand;
+        }
+      } else {
+        star.x = star.fromX + (star.toX - star.fromX) * progress;
+        star.y = star.fromY + (star.toY - star.fromY) * progress;
+      }
+
       star.opacity = star.fromOpacity + (star.toOpacity - star.fromOpacity) * progress;
 
       if (progress >= 0.5) {
@@ -457,18 +606,57 @@
 
       const drift = reducedMotion.matches
         ? 0
-        : Math.sin(time * 0.00053 + star.phase) * 0.65;
+        : Math.sin(time * 0.0006 + star.phase) * 0.9;
 
-      const x = layout.centerX + (star.x - maskWidth / 2 + drift) * layout.scale + pointerSmoothX;
-      const y = layout.centerY + (star.y - maskHeight / 2 + drift) * layout.scale + pointerSmoothY;
+      let x = layout.centerX + (star.x - maskWidth / 2 + drift) * layout.scale;
+      let y = layout.centerY + (star.y - maskHeight / 2 + drift) * layout.scale;
+
+      // One scroll tick sends the shape out into separate moving stars.
+      const scatter = scrollScatter * star.scatterDistance * Math.max(0.65, layout.scale);
+      x += Math.cos(star.scatterAngle) * scatter;
+      y += Math.sin(star.scatterAngle) * scatter * scrollDirection;
+
+      // The cursor nudges nearby particles out of the way.
+      if (pointerActive && !reducedMotion.matches) {
+        const dx = x - pointerX;
+        const dy = y - pointerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0.1 && distance < pointerRadius) {
+          const influence = Math.pow(1 - distance / pointerRadius, 2) * 23;
+          star.pushX += dx / distance * influence;
+          star.pushY += dy / distance * influence;
+        }
+      }
+
+      star.pushX = Math.max(-125, Math.min(125, star.pushX * 0.84));
+      star.pushY = Math.max(-125, Math.min(125, star.pushY * 0.84));
+      x += star.pushX;
+      y += star.pushY;
+
+      // Don't let the stars or their glow go across readable content.
+      if (isOverContent(x, y)) {
+        continue;
+      }
+
       const color = palette[star.color];
-      const opacity = star.opacity * strength;
-      const radius = Math.max(0.35, star.size * layout.scale);
+      const shimmer = reducedMotion.matches
+        ? 1
+        : 0.78 + Math.sin(time * 0.0028 + star.phase) * 0.22;
+      const opacity = star.opacity * strength * scrollOpacity * shimmer;
+      const radius = Math.max(0.4, star.size * layout.scale);
 
       if (star.bright) {
-        const spriteSize = Math.max(7, radius * 9);
-        context.globalAlpha = opacity * 0.6;
-        context.drawImage(sprites[star.color], x - spriteSize, y - spriteSize, spriteSize * 2, spriteSize * 2);
+        const spriteSize = Math.max(10, radius * 11);
+
+        context.globalAlpha = opacity * 0.8;
+        context.drawImage(
+          sprites[star.color],
+          x - spriteSize,
+          y - spriteSize,
+          spriteSize * 2,
+          spriteSize * 2
+        );
         context.globalAlpha = 1;
       }
 
@@ -476,7 +664,115 @@
       context.beginPath();
       context.arc(x, y, radius, 0, Math.PI * 2);
       context.fill();
+
+      // Bright four-point twinkles bring back the earlier star effect.
+      if (star.flare && opacity > 0.16) {
+        const size = Math.max(4, radius * 5);
+
+        context.strokeStyle = 'rgba(220,239,255,' + opacity * 0.62 + ')';
+        context.lineWidth = 0.75;
+        context.beginPath();
+        context.moveTo(x - size, y);
+        context.lineTo(x + size, y);
+        context.moveTo(x, y - size);
+        context.lineTo(x, y + size);
+        context.stroke();
+      }
     }
+
+    if (activeScene === 5) {
+      paintEventHorizon(layout, rawProgress, time);
+    }
+  }
+
+  // Stars converge first. A black centre and photon ring appear after.
+  function paintEventHorizon(layout, progress, time) {
+    // The collision creates a quick flash before the darkness settles.
+    if (progress < 0.38) {
+      const intensity = Math.exp(-Math.pow((progress - 0.35) / 0.075, 2));
+
+      if (intensity > 0.025 &&
+          !isOverContent(layout.centerX, layout.centerY)) {
+        const radius = Math.max(30, 155 * layout.scale);
+        const flash = context.createRadialGradient(
+          layout.centerX,
+          layout.centerY,
+          0,
+          layout.centerX,
+          layout.centerY,
+          radius
+        );
+
+        flash.addColorStop(0, 'rgba(240,247,255,' + intensity * 0.8 + ')');
+        flash.addColorStop(0.3, 'rgba(157,200,255,' + intensity * 0.3 + ')');
+        flash.addColorStop(1, 'rgba(109,159,255,0)');
+
+        context.fillStyle = flash;
+        context.beginPath();
+        context.arc(layout.centerX, layout.centerY, radius, 0, Math.PI * 2);
+        context.fill();
+      }
+
+      return;
+    }
+
+    const opacity = ease((progress - 0.38) / 0.46);
+    const x = layout.centerX;
+    const y = layout.centerY;
+    const radius = Math.max(28, 99 * layout.scale);
+
+    if (isOverContent(x, y)) {
+      return;
+    }
+
+    context.save();
+    context.globalAlpha = opacity;
+    context.translate(x, y);
+    context.rotate(-0.34);
+
+    // Soft blue and warm-orange light circles around the dark centre.
+    const disk = context.createRadialGradient(
+      0, 0, radius * 0.8,
+      0, 0, radius * 2.7
+    );
+
+    disk.addColorStop(0, 'rgba(140,190,255,0.10)');
+    disk.addColorStop(0.55, 'rgba(102,163,248,0.12)');
+    disk.addColorStop(0.78, 'rgba(255,172,112,0.19)');
+    disk.addColorStop(1, 'rgba(255,181,130,0)');
+
+    context.fillStyle = disk;
+    context.beginPath();
+    context.ellipse(0, 0, radius * 2.8, radius * 1.25, 0, 0, Math.PI * 2);
+    context.fill();
+
+    context.rotate(0.34);
+
+    // No stars inside the event horizon.
+    context.shadowBlur = radius * 0.4;
+    context.shadowColor = '#010208';
+    context.fillStyle = '#01030a';
+    context.beginPath();
+    context.arc(0, 0, radius, 0, Math.PI * 2);
+    context.fill();
+
+    context.shadowBlur = radius * 0.24;
+    context.shadowColor = '#9bcfff';
+    context.strokeStyle = '#d8ecff';
+    context.lineWidth = Math.max(1.2, layout.scale * 5);
+    context.beginPath();
+    context.arc(0, 0, radius * 1.04, 0, Math.PI * 2);
+    context.stroke();
+
+    const angle = time * 0.0004;
+    const lightX = Math.cos(angle) * radius * 1.08;
+    const lightY = Math.sin(angle) * radius * 1.08;
+
+    context.fillStyle = '#ffe0b5';
+    context.beginPath();
+    context.arc(lightX, lightY, Math.max(2, radius * 0.05), 0, Math.PI * 2);
+    context.fill();
+    context.restore();
   }
 
   function render(time) {
@@ -509,44 +805,58 @@
     }
   }
 
-  // Passive listeners keep page scrolling responsive.
-  let scrollQueued = false;
-
+  // Scattering should start on the first scroll tick.
   window.addEventListener('scroll', () => {
-    if (scrollQueued) {
-      return;
+    const position = window.scrollY;
+    const delta = position - lastScrollPosition;
+
+    lastScrollPosition = position;
+    lastScroll = performance.now();
+    scrollDirection = delta >= 0 ? 1 : -1;
+    scrollScatter = 1;
+    firstEntrance = false;
+
+    updateScene();
+    queueZoneRefresh();
+
+    if (reducedMotion.matches) {
+      render(performance.now());
     }
-
-    scrollQueued = true;
-
-    requestAnimationFrame(() => {
-      scrollQueued = false;
-      updateScene();
-    });
   }, { passive: true });
 
   window.addEventListener('resize', () => {
     resize();
+    refreshProtectedZones();
     updateScene();
   }, { passive: true });
 
   if (window.matchMedia('(pointer: fine)').matches) {
     window.addEventListener('pointermove', event => {
-      pointerX = (event.clientX / width - 0.5) * 10;
-      pointerY = (event.clientY / height - 0.5) * 8;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      pointerActive = true;
     }, { passive: true });
+
+    document.addEventListener('pointerleave', () => {
+      pointerActive = false;
+    });
   }
 
   document.addEventListener('visibilitychange', start);
 
   if (typeof reducedMotion.addEventListener === 'function') {
-    reducedMotion.addEventListener('change', start);
+    reducedMotion.addEventListener('change', () => {
+      scrollScatter = 0;
+      start();
+    });
   }
 
   buildMasks();
   makeStars();
   resize();
+  refreshProtectedZones();
   sceneStart = performance.now();
+  lastScrollPosition = window.scrollY;
   updateScene();
   start();
 })();

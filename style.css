@@ -1223,29 +1223,42 @@ button:focus-visible {
   pointer-events: none;
 }
 
+/* The final scene gives the black hole its own space. */
 .contact-inner {
   position: relative;
-  z-index: 1;
-  padding-block: 125px 130px;
-  text-align: center;
+  z-index: 4;
+  min-height: 615px;
+  padding-block: 145px 150px;
+  text-align: left;
+}
+
+.contact-inner .section-label,
+.contact-inner h2,
+.contact-inner > p:not(.section-label) {
+  max-width: 54%;
 }
 
 .contact-inner h2 {
-  margin: 30px auto;
-  padding: 0.035em 0 0.1em;
+  margin: 28px 0;
+  padding: 0.03em 0 0.12em;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(55px, 6.4vw, 100px);
+  font-size: clamp(53px, 5.15vw, 79px);
   font-weight: 500;
-  letter-spacing: -0.075em;
-  line-height: 1.17;
+  letter-spacing: -0.07em;
+  line-height: 1.16;
 }
 
 .contact-inner > p:not(.section-label) {
-  max-width: 540px;
-  margin: 0 auto 32px;
+  max-width: 475px;
+  margin: 0 0 34px;
   color: #b7c3d8;
   font-size: 14px;
   line-height: 1.9;
+}
+
+.contact-inner .primary-link {
+  position: relative;
+  z-index: 5;
 }
 
 /* FOOTER */
@@ -1387,8 +1400,9 @@ button:focus-visible {
 
 @media (max-width: 960px) {
   .section-container,
-  .nav-container,
-
+  .nav-container {
+    width: min(100% - 54px, 1380px);
+  }
 
   .statement-grid,
   .about-layout {
@@ -1528,8 +1542,9 @@ button:focus-visible {
 
 @media (max-width: 560px) {
   .section-container,
-  .nav-container,
-
+  .nav-container {
+    width: calc(100% - 42px);
+  }
 
   .brand {
     font-size: 24px;
@@ -1749,3 +1764,53 @@ button:focus-visible {
   }
 
 }
+
+/* Keep the black-hole layout clear on every screen size. */
+@media (max-width: 960px) {
+  .contact-inner {
+    min-height: 560px;
+    padding-block: 125px;
+  }
+
+  .contact-inner h2 {
+    max-width: 60%;
+    font-size: clamp(44px, 5.8vw, 67px);
+  }
+
+  .contact-inner > p:not(.section-label) {
+    max-width: 53%;
+  }
+}
+
+@media (max-width: 760px) {
+  .contact-inner {
+    min-height: 800px;
+    padding-top: 430px;
+    padding-bottom: 85px;
+    text-align: center;
+  }
+
+  .contact-inner .section-label,
+  .contact-inner h2,
+  .contact-inner > p:not(.section-label) {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-inner h2 {
+    font-size: clamp(44px, 8.5vw, 65px);
+  }
+
+  .contact-inner > p:not(.section-label) {
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 450px) {
+  .contact-inner {
+    min-height: 760px;
+    padding-top: 375px;
+  }
+}
+
