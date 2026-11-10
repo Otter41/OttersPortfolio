@@ -82,66 +82,51 @@
     ctx.stroke();
   }
 
-  // The mask is based on the uploaded front-facing otter:
-  // round face, soft cheeks, shiny eyes, chest and a splash of water.
+  // Paint the colour map from the actual otter picture.
+  // The pixels only guide star placement. The picture never shows on the page.
   function drawOtter(ctx) {
     ctx.clearRect(0, 0, maskWidth, maskHeight);
 
-    // Torso and ears sit behind the face.
-    ellipse(ctx, 360, 545, 218, 215, '#9d7669');
-    ellipse(ctx, 171, 244, 67, 88, '#88655a');
-    ellipse(ctx, 547, 242, 67, 88, '#88655a');
-    ellipse(ctx, 173, 245, 40, 57, '#604846');
-    ellipse(ctx, 546, 243, 40, 57, '#604846');
+    if (typeof otterReference === 'undefined') {
+      return;
+    }
 
-    // The head has a wide, rounded silhouette.
-    ellipse(ctx, 359, 286, 234, 237, '#a88475');
-    ellipse(ctx, 359, 200, 173, 120, '#b08a7c');
-
-    // The original otter has two large, light cheeks.
-    ellipse(ctx, 257, 375, 128, 104, '#e8dac8');
-    ellipse(ctx, 460, 374, 128, 104, '#e9ddcb');
-    ellipse(ctx, 357, 389, 116, 98, '#f1e4d1');
-
-    // Make the eyes dark enough to read between the brighter stars.
-    ellipse(ctx, 269, 269, 41, 61, '#342c31');
-    ellipse(ctx, 452, 267, 42, 61, '#342c31');
-    ellipse(ctx, 260, 241, 12, 15, '#f6f3eb');
-    ellipse(ctx, 445, 239, 12, 15, '#f6f3eb');
-
-    // Nose, mouth and chin.
-    ellipse(ctx, 359, 342, 70, 42, '#3b3235');
-    ellipse(ctx, 360, 396, 45, 30, '#6c3d42');
-    ellipse(ctx, 360, 384, 24, 12, '#f0c0ab');
-    ellipse(ctx, 359, 430, 95, 38, '#ded3c6');
-
-    // Light fur below the face.
-    ellipse(ctx, 355, 569, 116, 168, '#e8d9c8');
-    ellipse(ctx, 356, 618, 78, 110, '#f2e3d3');
-
-    // Whiskers, kept delicate instead of hard cartoon strokes.
-    const whiskers = [
-      [[256, 377], [165, 350], [97, 353]],
-      [[250, 401], [157, 398], [89, 422]],
-      [[254, 423], [175, 450], [119, 479]],
-      [[460, 377], [559, 351], [629, 352]],
-      [[464, 399], [569, 399], [638, 421]],
-      [[461, 424], [553, 450], [613, 478]]
+    const colours = [
+      '',
+      '#302832', // Dark eyes, nose and tiny details.
+      '#a0a9d2', // Fur, lit by the blue stars.
+      '#777ba9', // Softer shadows in the fur.
+      '#f1f1ff', // The muzzle and chest.
+      '#e2d8ee', // Highlights.
+      '#5fc4d7', // Water and splashes.
+      '#79bbd4', // Deeper water.
+      '#d89894'  // A little colour inside the mouth.
     ];
 
-    whiskers.forEach(points => {
-      strokePath(ctx, points, '#ddd9cf', 4);
-    });
+    const pixels = atob(otterReference.pixels);
+    const cellWidth = maskWidth / otterReference.width;
+    const cellHeight = (maskHeight - 154) / otterReference.height;
+    const top = 77;
 
-    // Rippling turquoise water along the bottom of the picture.
-    ellipse(ctx, 360, 699, 330, 49, '#2a99b5');
-    ellipse(ctx, 356, 688, 269, 30, '#7ad7d6');
-    strokePath(ctx, [[86, 695], [197, 707], [329, 716], [486, 706], [640, 688]], '#a4eff2', 10);
-    strokePath(ctx, [[129, 734], [232, 749], [365, 739], [489, 751], [592, 730]], '#3688a5', 12);
-    ellipse(ctx, 98, 633, 13, 33, '#68d3df');
-    ellipse(ctx, 625, 618, 16, 36, '#68d3df');
-    ellipse(ctx, 658, 671, 13, 19, '#5bcede');
-    ellipse(ctx, 79, 677, 10, 15, '#6bd7e1');
+    for (let row = 0; row < otterReference.height; row++) {
+      for (let col = 0; col < otterReference.width; col++) {
+        const index = row * otterReference.width + col;
+        const byte = pixels.charCodeAt(Math.floor(index / 2)) || 0;
+        const colour = index % 2 === 0 ? byte >> 4 : byte & 15;
+
+        if (colour === 0) {
+          continue;
+        }
+
+        ctx.fillStyle = colours[colour] || colours[2];
+        ctx.fillRect(
+          col * cellWidth,
+          top + row * cellHeight,
+          cellWidth + 0.1,
+          cellHeight + 0.1
+        );
+      }
+    }
   }
 
   function drawCode(ctx) {
@@ -243,6 +228,11 @@
 
     if (red > 216 && green > 210 && blue > 202) {
       return 0;
+    }
+
+    // A handful of warm stars keeps the whole thing from going flat blue.
+    if (random(0, 1) < 0.07) {
+      return 3;
     }
 
     return Math.floor(random(0, 3));
