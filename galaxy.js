@@ -772,44 +772,57 @@
     }
   }
 
-  // Passive listeners keep page scrolling responsive.
-  let scrollQueued = false;
-
+  // Scattering should start on the first scroll tick.
   window.addEventListener('scroll', () => {
-    if (scrollQueued) {
-      return;
+    const position = window.scrollY;
+    const delta = position - lastScrollPosition;
+
+    lastScrollPosition = position;
+    lastScroll = performance.now();
+    scrollDirection = delta >= 0 ? 1 : -1;
+    scrollScatter = 1;
+
+    updateScene();
+    queueZoneRefresh();
+
+    if (reducedMotion.matches) {
+      render(performance.now());
     }
-
-    scrollQueued = true;
-
-    requestAnimationFrame(() => {
-      scrollQueued = false;
-      updateScene();
-    });
   }, { passive: true });
 
   window.addEventListener('resize', () => {
     resize();
+    refreshProtectedZones();
     updateScene();
   }, { passive: true });
 
   if (window.matchMedia('(pointer: fine)').matches) {
     window.addEventListener('pointermove', event => {
-      pointerX = (event.clientX / width - 0.5) * 10;
-      pointerY = (event.clientY / height - 0.5) * 8;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      pointerActive = true;
     }, { passive: true });
+
+    document.addEventListener('pointerleave', () => {
+      pointerActive = false;
+    });
   }
 
   document.addEventListener('visibilitychange', start);
 
   if (typeof reducedMotion.addEventListener === 'function') {
-    reducedMotion.addEventListener('change', start);
+    reducedMotion.addEventListener('change', () => {
+      scrollScatter = 0;
+      start();
+    });
   }
 
   buildMasks();
   makeStars();
   resize();
+  refreshProtectedZones();
   sceneStart = performance.now();
+  lastScrollPosition = window.scrollY;
   updateScene();
   start();
 })();
