@@ -61,7 +61,7 @@ button:focus-visible {
   position: fixed;
   left: 15px;
   top: -65px;
-  z-index: 100;
+  z-index: 160;
   padding: 10px 16px;
   color: #08111f;
   background: #f1f4ff;
@@ -74,7 +74,7 @@ button:focus-visible {
 
 .scroll-progress {
   position: fixed;
-  z-index: 80;
+  z-index: 150;
   top: 0;
   left: 0;
   width: 0;
@@ -120,7 +120,7 @@ button:focus-visible {
 
 .site-header {
   position: absolute;
-  z-index: 50;
+  z-index: 130;
   top: 0;
   left: 0;
   right: 0;
@@ -249,7 +249,7 @@ button:focus-visible {
 
 .galaxy-canvas {
   position: fixed;
-  z-index: 12;
+  z-index: 100;
   inset: 0;
   display: block;
   width: 100%;
@@ -257,8 +257,8 @@ button:focus-visible {
   pointer-events: none;
 }
 
-/* The stars sit above section backgrounds, but below actual content.
-   Keep the sections themselves out of their own stacking contexts. */
+/* Put the constellation in front of section backgrounds and decorative cards.
+   The canvas clears only the real text underneath it. */
 .section-container {
   position: relative;
   z-index: 20;
