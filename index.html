@@ -14,9 +14,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <script src="otter-reference.js?v=3" defer></script>
-  <script src="script.js?v=3" defer></script>
+  <script src="script.js?v=4" defer></script>
 </head>
 <body>
   <div class="preloader" id="preloader" aria-hidden="true">
@@ -95,8 +95,23 @@
       </div>
 
       <div class="rows">
-        <button class="row reveal" type="button" data-project="otterlink">
+        <button class="row reveal" type="button" data-project="wellbloom">
           <span class="row-no">001</span>
+          <span class="row-main">
+            <span class="row-title">WellBloom</span>
+            <span class="row-meta">PUBLISHED GAME / PLAY ON ITCH.IO</span>
+            <span class="row-more">
+              <span class="row-more-inner">
+                <span class="row-desc">A browser-playable strategy game, independently released in November 2026. Built in two weeks and continuing to grow through post-launch updates. Open the details to play it on itch.io.</span>
+                <span class="tags"><span>Browser Game</span><span>Strategy</span><span>Game Design</span></span>
+              </span>
+            </span>
+          </span>
+          <span class="row-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="row reveal" type="button" data-project="otterlink">
+          <span class="row-no">002</span>
           <span class="row-main">
             <span class="row-title">OtterLink</span>
             <span class="row-meta">DESKTOP APPLICATION / PRIVATE REPOSITORY</span>
@@ -111,7 +126,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="otteraui">
-          <span class="row-no">002</span>
+          <span class="row-no">003</span>
           <span class="row-main">
             <span class="row-title">OtteraUI</span>
             <span class="row-meta">PERSONAL PROJECT / IN DEVELOPMENT</span>
@@ -126,7 +141,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="rhythmabox">
-          <span class="row-no">003</span>
+          <span class="row-no">004</span>
           <span class="row-main">
             <span class="row-title">RhythmaBox</span>
             <span class="row-meta">DESKTOP / MULTIMEDIA</span>
@@ -141,7 +156,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="ottersapex">
-          <span class="row-no">004</span>
+          <span class="row-no">005</span>
           <span class="row-main">
             <span class="row-title">OttersApex</span>
             <span class="row-meta">MOTORSPORT / TELEMETRY</span>
@@ -156,7 +171,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="totallysafe">
-          <span class="row-no">005</span>
+          <span class="row-no">006</span>
           <span class="row-main">
             <span class="row-title">Totally Safe</span>
             <span class="row-meta">GAME / UNITY</span>
@@ -171,7 +186,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="library">
-          <span class="row-no">006</span>
+          <span class="row-no">007</span>
           <span class="row-main">
             <span class="row-title">Library Management System</span>
             <span class="row-meta">FOUNDATIONS / C#</span>
@@ -186,7 +201,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="events">
-          <span class="row-no">007</span>
+          <span class="row-no">008</span>
           <span class="row-main">
             <span class="row-title">Event &amp; Attendance Tracker</span>
             <span class="row-meta">WEB / BLAZOR</span>
@@ -201,7 +216,7 @@
         </button>
 
         <button class="row reveal" type="button" data-project="inventoryhub">
-          <span class="row-no">008</span>
+          <span class="row-no">009</span>
           <span class="row-main">
             <span class="row-title">InventoryHub</span>
             <span class="row-meta">WEB / FULL-STACK</span>
@@ -307,6 +322,7 @@
       <h3>What went into it</h3>
       <ul id="dialogPoints"></ul>
       <div class="tags" id="dialogTags"></div>
+      <a class="dialog-project-link" id="dialogProjectLink" href="https://mrbulko.itch.io/wellbloom" target="_blank" rel="noopener noreferrer" hidden>Play WellBloom on itch.io ↗</a>
       <p class="dialog-note">Some builds are private, experimental, or part of my learning journey. Descriptions are intentionally limited to what I can share.</p>
     </div>
   </dialog>

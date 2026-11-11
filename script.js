@@ -1,6 +1,19 @@
 'use strict';
 
 const projects = {
+  wellbloom: {
+    title: 'WellBloom',
+    category: 'Published browser strategy game · itch.io · November 2026',
+    description: 'An independently released, browser-playable strategy game built in a two-week development cycle. Continuing updates are planned, and a Steam release may follow if the game gains enough traction.',
+    points: [
+      'Designed, developed, tested, and launched as a publicly playable browser game.',
+      'Created gameplay and interface experiences with an emphasis on ongoing refinement.',
+      'Used AI-assisted development with Claude and disclosed that assistance on the release page.',
+      'Public release: mrbulko.itch.io/wellbloom'
+    ],
+    tags: ['Browser Game', 'Strategy', 'Indie Game', 'Game Design', 'UI/UX'],
+    url: 'https://mrbulko.itch.io/wellbloom'
+  },
   otterlink: {
     title: 'OtterLink',
     category: 'Desktop application · Private repository',
@@ -115,6 +128,7 @@ const hexPalette = ['#f3ede2', '#ff7a45', '#ffba8c', '#7edcd6', '#beaaf0', '#fff
 const cssPalette = palette.map(color => 'rgb(' + color.join(',') + ')');
 
 const sceneLabels = {
+  wellbloom: 'WELLBLOOM',
   otter: 'OTTER',
   drift: 'DEEP FIELD',
   galaxy: 'SPIRAL GALAXY',
@@ -469,6 +483,37 @@ function createUniverse(canvas) {
     ctx.fill();
   }
 
+  function drawBloom(ctx) {
+    ctx.strokeStyle = hexPalette[1];
+    ctx.lineWidth = 17;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(180, 191);
+    ctx.quadraticCurveTo(188, 265, 168, 331);
+    ctx.stroke();
+
+    ctx.fillStyle = hexPalette[4];
+    ctx.beginPath();
+    ctx.ellipse(143, 271, 47, 22, Math.PI / 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(215, 292, 43, 20, -Math.PI / 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let index = 0; index < 6; index++) {
+      const angle = (index * Math.PI) / 3;
+      ctx.fillStyle = index % 2 ? hexPalette[2] : hexPalette[0];
+      ctx.beginPath();
+      ctx.ellipse(180 + Math.cos(angle) * 57, 132 + Math.sin(angle) * 57, 37, 59, angle + Math.PI / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.fillStyle = hexPalette[3];
+    ctx.beginPath();
+    ctx.arc(180, 132, 36, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
   function drawWarning(ctx) {
     ctx.lineJoin = 'round';
     ctx.lineWidth = 26;
@@ -703,6 +748,7 @@ function createUniverse(canvas) {
     shapes.code = maskShape(drawCode, 0.14);
     shapes.shield = maskShape(drawShield, 0.12);
     shapes.blackhole = blackHoleShape();
+    shapes.wellbloom = maskShape(drawBloom, 0.12);
     shapes.otterlink = maskShape(drawChat, 0.12);
     shapes.otteraui = maskShape(drawPhone, 0.1);
     shapes.rhythmabox = maskShape(drawWave, 0.16);
@@ -1278,6 +1324,10 @@ function openProject(key) {
     item.textContent = point;
     return item;
   }));
+
+  const projectLink = $('#dialogProjectLink');
+  projectLink.hidden = !project.url;
+  if (project.url) projectLink.href = project.url;
 
   $('#dialogTags').replaceChildren(...project.tags.map(tag => {
     const item = document.createElement('span');
