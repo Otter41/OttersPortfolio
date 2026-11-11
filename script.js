@@ -2,17 +2,18 @@
 
 const projects = {
   wellbloom: {
-    title: 'WellBloom',
-    category: 'Published browser strategy game · itch.io · November 2026',
-    description: 'An independently released, browser-playable strategy game built in a two-week development cycle. Continuing updates are planned, and a Steam release may follow if the game gains enough traction.',
+    title: 'Wellbloom',
+    category: 'Browser game · Published on itch.io',
+    description: 'A chain-reaction garden roguelike inspired by score-attack deckbuilders. Plant seeds around a magic spring, then press Bloom and watch a wave cascade ring by ring through every connected plant, stacking chips and multipliers into absurd numbers.',
     points: [
-      'Designed, developed, tested, and launched as a publicly playable browser game.',
-      'Created gameplay and interface experiences with an emphasis on ongoing refinement.',
-      'Used AI-assisted development with Claude and disclosed that assistance on the release page.',
-      'Public release: mrbulko.itch.io/wellbloom'
+      'Single-file HTML5 game: Canvas 2D rendering, procedural Web Audio music and sound, no engine or external assets.',
+      'Cel-shaded ink art style with impact frames, speed lines, camera punch-ins, and a day-to-night sky.',
+      '29 plants, 18 trinkets, a Night Market economy, weather rounds, an endless mode, and automatic save and resume.',
+      'Difficulty tuned with a simulation bot that played hundreds of runs against the scoring curve.',
+      'Built in collaboration with Claude (AI): I directed the concept, art direction, and features, then playtested and published it.'
     ],
-    tags: ['Browser Game', 'Strategy', 'Indie Game', 'Game Design', 'UI/UX'],
-    url: 'https://mrbulko.itch.io/wellbloom'
+    tags: ['JavaScript', 'Canvas 2D', 'Web Audio', 'Game Design', 'itch.io'],
+    link: { href: 'https://mrbulko.itch.io/wellbloom', label: 'Play Wellbloom on itch.io ↗' }
   },
   otterlink: {
     title: 'OtterLink',
@@ -484,34 +485,31 @@ function createUniverse(canvas) {
   }
 
   function drawBloom(ctx) {
-    ctx.strokeStyle = hexPalette[1];
-    ctx.lineWidth = 17;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(180, 191);
-    ctx.quadraticCurveTo(188, 265, 168, 331);
-    ctx.stroke();
+    const cx = 180;
+    const cy = 180;
 
-    ctx.fillStyle = hexPalette[4];
-    ctx.beginPath();
-    ctx.ellipse(143, 271, 47, 22, Math.PI / 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(215, 292, 43, 20, -Math.PI / 5, 0, Math.PI * 2);
-    ctx.fill();
-
-    for (let index = 0; index < 6; index++) {
-      const angle = (index * Math.PI) / 3;
-      ctx.fillStyle = index % 2 ? hexPalette[2] : hexPalette[0];
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      ctx.fillStyle = i % 2 ? hexPalette[2] : hexPalette[1];
       ctx.beginPath();
-      ctx.ellipse(180 + Math.cos(angle) * 57, 132 + Math.sin(angle) * 57, 37, 59, angle + Math.PI / 2, 0, Math.PI * 2);
+      ctx.ellipse(0, -100, 42, 74, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
     }
 
     ctx.fillStyle = hexPalette[3];
     ctx.beginPath();
-    ctx.arc(180, 132, 36, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 62, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = hexPalette[5];
+    ctx.beginPath();
+    ctx.arc(cx, cy, 34, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
   function drawWarning(ctx) {
@@ -748,7 +746,7 @@ function createUniverse(canvas) {
     shapes.code = maskShape(drawCode, 0.14);
     shapes.shield = maskShape(drawShield, 0.12);
     shapes.blackhole = blackHoleShape();
-    shapes.wellbloom = maskShape(drawBloom, 0.12);
+    shapes.wellbloom = maskShape(drawBloom, 0.14);
     shapes.otterlink = maskShape(drawChat, 0.12);
     shapes.otteraui = maskShape(drawPhone, 0.1);
     shapes.rhythmabox = maskShape(drawWave, 0.16);
@@ -1325,15 +1323,21 @@ function openProject(key) {
     return item;
   }));
 
-  const projectLink = $('#dialogProjectLink');
-  projectLink.hidden = !project.url;
-  if (project.url) projectLink.href = project.url;
-
   $('#dialogTags').replaceChildren(...project.tags.map(tag => {
     const item = document.createElement('span');
     item.textContent = tag;
     return item;
   }));
+
+  const dialogLink = $('#dialogLink');
+
+  if (project.link) {
+    dialogLink.href = project.link.href;
+    dialogLink.textContent = project.link.label;
+    dialogLink.hidden = false;
+  } else {
+    dialogLink.hidden = true;
+  }
 
   dialog.showModal();
 }
