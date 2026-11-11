@@ -1127,21 +1127,26 @@ main > section > * {
   }
 }
 
-/* Published-game action in project details */
-.dialog-project-link {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
+.dialog-link {
+  display: inline-block;
   margin-top: 24px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   border: 1px solid var(--ember);
   border-radius: 999px;
-  color: var(--cream);
-  background: rgba(255, 122, 69, 0.1);
+  color: var(--ember);
   font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.025em;
-  transition: background 200ms ease, transform 200ms ease;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease;
 }
-.dialog-project-link:hover { background: rgba(255, 122, 69, 0.22); transform: translateY(-2px); }
-.dialog-project-link[hidden] { display: none; }
+
+.dialog-link:hover,
+.dialog-link:focus-visible {
+  background: var(--ember);
+  color: var(--ink);
+}
+
+.dialog-link[hidden] {
+  display: none;
+}
