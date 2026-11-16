@@ -1057,7 +1057,17 @@ main > section > * {
   }
 
   main > section {
-    padding: 14vh var(--pad);
+    padding: 76px var(--pad);
+    scroll-margin-top: 90px;
+  }
+
+  .manifesto {
+    min-height: 62svh;
+    gap: 24px;
+  }
+
+  .contact {
+    min-height: 82svh;
   }
 
   .hero {
@@ -1125,28 +1135,4 @@ main > section > * {
   html {
     scroll-behavior: auto;
   }
-}
-
-.dialog-link {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 12px 20px;
-  border: 1px solid var(--ember);
-  border-radius: 999px;
-  color: var(--ember);
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.dialog-link:hover,
-.dialog-link:focus-visible {
-  background: var(--ember);
-  color: var(--ink);
-}
-
-.dialog-link[hidden] {
-  display: none;
 }
