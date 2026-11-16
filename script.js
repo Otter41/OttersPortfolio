@@ -169,7 +169,7 @@ const universe = createUniverse($('#universe'));
 
 function createUniverse(canvas) {
   const context = canvas.getContext('2d');
-  const count = isNarrow() ? 2600 : 5200;
+  const count = isNarrow() ? 2000 : 5200;
   const maskSize = 360;
   const shapes = {};
 
@@ -822,7 +822,7 @@ function createUniverse(canvas) {
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, isNarrow() ? 1.25 : 1.75);
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -917,6 +917,11 @@ function createUniverse(canvas) {
     const sinPitch = Math.sin(pitch);
     const focal = 2.8;
     const fade = 1 - explode;
+    const narrow = isNarrow();
+    const boost = narrow ? 1.45 : 1;
+    const starBoost = narrow ? 1.5 : 1;
+    const starScale = narrow ? 1.5 : 1;
+    const sizeScale = narrow ? 1.3 : 1.15;
 
     yawDegrees = yaw * 180 / Math.PI;
 
@@ -928,9 +933,11 @@ function createUniverse(canvas) {
       const y = star.y * height - window.scrollY * 0.05 * star.depth;
       const wrappedY = (y % height + height) % height;
 
-      context.globalAlpha = twinkle * (0.25 + star.depth * 0.45);
+      const starSize = (0.6 + star.depth) * starScale;
+
+      context.globalAlpha = clamp(twinkle * (0.25 + star.depth * 0.45) * starBoost);
       context.fillStyle = star.warm ? cssPalette[2] : cssPalette[0];
-      context.fillRect(x, wrappedY, 0.6 + star.depth, 0.6 + star.depth);
+      context.fillRect(x, wrappedY, starSize, starSize);
     }
 
     for (let index = 0; index < count; index++) {
@@ -961,13 +968,13 @@ function createUniverse(canvas) {
         continue;
       }
 
-      const alpha = clamp((perspective - 0.45) * 0.9) * stage.dim * fade;
+      const alpha = clamp(clamp((perspective - 0.45) * 0.9) * stage.dim * fade * boost);
 
       if (alpha < 0.02) {
         continue;
       }
 
-      const size = sizes[index] * perspective * (isNarrow() ? 0.9 : 1.15);
+      const size = sizes[index] * perspective * sizeScale;
       const colour = colors[index];
       const travelX = projectedX - previousX;
       const travelY = projectedY - previousY;
