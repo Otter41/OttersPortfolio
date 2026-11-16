@@ -1,20 +1,6 @@
 'use strict';
 
 const projects = {
-  wellbloom: {
-    title: 'Wellbloom',
-    category: 'Browser game · Published on itch.io',
-    description: 'A chain-reaction garden roguelike inspired by score-attack deckbuilders. Plant seeds around a magic spring, then press Bloom and watch a wave cascade ring by ring through every connected plant, stacking chips and multipliers into absurd numbers.',
-    points: [
-      'Single-file HTML5 game: Canvas 2D rendering, procedural Web Audio music and sound, no engine or external assets.',
-      'Cel-shaded ink art style with impact frames, speed lines, camera punch-ins, and a day-to-night sky.',
-      '29 plants, 18 trinkets, a Night Market economy, weather rounds, an endless mode, and automatic save and resume.',
-      'Difficulty tuned with a simulation bot that played hundreds of runs against the scoring curve.',
-      'Built in collaboration with Claude (AI): I directed the concept, art direction, and features, then playtested and published it.'
-    ],
-    tags: ['JavaScript', 'Canvas 2D', 'Web Audio', 'Game Design', 'itch.io'],
-    link: { href: 'https://mrbulko.itch.io/wellbloom', label: 'Play Wellbloom on itch.io ↗' }
-  },
   otterlink: {
     title: 'OtterLink',
     category: 'Desktop application · Private repository',
@@ -129,7 +115,6 @@ const hexPalette = ['#f3ede2', '#ff7a45', '#ffba8c', '#7edcd6', '#beaaf0', '#fff
 const cssPalette = palette.map(color => 'rgb(' + color.join(',') + ')');
 
 const sceneLabels = {
-  wellbloom: 'WELLBLOOM',
   otter: 'OTTER',
   drift: 'DEEP FIELD',
   galaxy: 'SPIRAL GALAXY',
@@ -484,34 +469,6 @@ function createUniverse(canvas) {
     ctx.fill();
   }
 
-  function drawBloom(ctx) {
-    const cx = 180;
-    const cy = 180;
-
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(angle);
-      ctx.fillStyle = i % 2 ? hexPalette[2] : hexPalette[1];
-      ctx.beginPath();
-      ctx.ellipse(0, -100, 42, 74, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    ctx.fillStyle = hexPalette[3];
-    ctx.beginPath();
-    ctx.arc(cx, cy, 62, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = hexPalette[5];
-    ctx.beginPath();
-    ctx.arc(cx, cy, 34, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-
   function drawWarning(ctx) {
     ctx.lineJoin = 'round';
     ctx.lineWidth = 26;
@@ -746,7 +703,6 @@ function createUniverse(canvas) {
     shapes.code = maskShape(drawCode, 0.14);
     shapes.shield = maskShape(drawShield, 0.12);
     shapes.blackhole = blackHoleShape();
-    shapes.wellbloom = maskShape(drawBloom, 0.14);
     shapes.otterlink = maskShape(drawChat, 0.12);
     shapes.otteraui = maskShape(drawPhone, 0.1);
     shapes.rhythmabox = maskShape(drawWave, 0.16);
@@ -1328,16 +1284,6 @@ function openProject(key) {
     item.textContent = tag;
     return item;
   }));
-
-  const dialogLink = $('#dialogLink');
-
-  if (project.link) {
-    dialogLink.href = project.link.href;
-    dialogLink.textContent = project.link.label;
-    dialogLink.hidden = false;
-  } else {
-    dialogLink.hidden = true;
-  }
 
   dialog.showModal();
 }
