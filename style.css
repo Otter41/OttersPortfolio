@@ -1053,7 +1053,21 @@ main > section > * {
 
   .vignette {
     background:
-      linear-gradient(180deg, rgba(6, 5, 10, 0.2), rgba(6, 5, 10, 0.55) 60%, rgba(6, 5, 10, 0.8));
+      linear-gradient(180deg, rgba(6, 5, 10, 0.05), rgba(6, 5, 10, 0.3) 60%, rgba(6, 5, 10, 0.6));
+  }
+
+  .grain {
+    animation: none;
+  }
+
+  .hud {
+    backdrop-filter: none;
+    background: rgba(6, 5, 10, 0.82);
+  }
+
+  .stack-row {
+    backdrop-filter: none;
+    background: linear-gradient(140deg, rgba(20, 17, 26, 0.92), rgba(10, 8, 14, 0.88));
   }
 
   main > section {
