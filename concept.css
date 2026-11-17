@@ -1,0 +1,271 @@
+/* Concept C — Depth: a hollow giant name with the otter living inside it, on a planet horizon */
+.hero { position: relative; justify-content: flex-end; }
+.hero > * { max-width: none !important; }
+.hero-meta { position: absolute; top: 120px; left: var(--pad); }
+.hero-main { position: absolute; left: 0; right: 0; top: 47%; transform: translateY(-50%); text-align: center; }
+.hero-title { font-size: clamp(110px, 27vw, 480px); font-weight: 700; letter-spacing: -.055em; line-height: .8;
+  color: transparent; -webkit-text-stroke: 1.2px rgba(243,237,226,.55); }
+.hero-title .dot { color: var(--ember); -webkit-text-stroke: 0; }
+.horizon { position: absolute; left: -10%; right: -10%; top: 73%; height: 60vh; border-radius: 50% 50% 0 0 / 22% 22% 0 0;
+  border-top: 1px solid rgba(255,186,140,.55); background: linear-gradient(180deg, rgba(255,122,69,.12), rgba(6,5,10,.9) 18%);
+  box-shadow: 0 -30px 90px rgba(255,122,69,.22), inset 0 30px 60px rgba(255,122,69,.08); pointer-events: none; }
+.hero-foot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: none; width: 100%; position: relative; z-index: 2;
+  padding-top: 24px; border-top: 1px solid var(--line); }
+.hero-foot .kicker { display: block; margin-bottom: 10px; color: var(--ember); }
+.hero-foot .hero-role { font-family: var(--display); font-style: normal; font-size: 15px; margin: 0; color: var(--cream); opacity: 1; transform: none; line-height: 1.6; }
+.hero-foot .hero-line { font-size: 15px; color: var(--cream-dim); }
+.hero-foot .hero-hint { margin-top: 12px; }
+.vignette { background: radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(6,5,10,.6) 100%); }
+@media (max-width: 900px) { .hero-foot { grid-template-columns: 1fr; gap: 16px; } .hero-main { top: 40%; } .horizon { top: 55%; } .hero-foot > div:nth-child(3) { display: none; } }
+.hero-title { font-size: clamp(100px, 24vw, 430px); }
+.hero-main { top: 44%; }
+.hero-title .dot { font-size: 0.45em; display: inline-block; margin-left: 0.04em; }
+.horizon { top: 70%; }
+
+/* =========================================================================
+   Concept C carried through the site
+   ========================================================================= */
+
+main > section {
+  overflow: hidden;
+}
+
+/* giant hollow words behind each section's star shape */
+.ghost {
+  position: absolute;
+  right: -2vw;
+  top: 50%;
+  z-index: -1;
+  max-width: none !important;
+  font-size: clamp(120px, 21vw, 380px);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.8;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243, 237, 226, 0.13);
+  transform: translate3d(var(--gx, 0px), -50%, 0);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* section kickers get a hairline that runs out to the right */
+main > section > .kicker:first-child,
+.work-head > .kicker:first-child {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--ember);
+}
+
+main > section > .kicker:first-child::after,
+.work-head > .kicker:first-child::after {
+  content: "";
+  width: min(160px, 18vw);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 122, 69, 0.6), transparent);
+}
+
+/* project rows: hollow titles that fill in when active */
+.row-title {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243, 237, 226, 0.6);
+  font-size: clamp(34px, min(4.4vw, 7.5vh), 76px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  transition: color 0.5s ease, -webkit-text-stroke-color 0.5s ease, letter-spacing 0.7s var(--ease);
+}
+
+.row.active .row-title,
+.row:hover .row-title {
+  color: var(--cream);
+  -webkit-text-stroke-color: transparent;
+}
+
+.row::before {
+  background: linear-gradient(90deg, rgba(255, 122, 69, 0.1), transparent 70%);
+}
+
+.row-no {
+  color: var(--ember);
+  opacity: 0.55;
+}
+
+.row.active .row-no,
+.row:hover .row-no {
+  opacity: 1;
+}
+
+/* toolkit: open rows instead of boxed cards, same hollow-to-solid titles */
+.stack-rows {
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.stack-row {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  padding: 30px 0 30px 0;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  column-gap: 18px;
+}
+
+.stack-row > * {
+  grid-column: 2;
+}
+
+.stack-row .stack-no {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  padding-top: 14px;
+}
+
+.stack-row h3 {
+  margin-top: 0;
+  font-size: clamp(32px, min(3.8vw, 6.5vh), 64px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243, 237, 226, 0.6);
+  transition: color 0.5s ease, -webkit-text-stroke-color 0.5s ease;
+}
+
+.stack-row.in h3 {
+  transition-delay: 0.4s;
+}
+
+.stack-row:hover {
+  transform: none;
+  border-color: var(--line);
+}
+
+.stack-row:hover h3,
+.stack-row.lit h3 {
+  color: var(--cream);
+  -webkit-text-stroke-color: transparent;
+}
+
+.stack-row::after {
+  inset: 0 -20px;
+}
+
+/* journey: ember labels, solid dot only for "now" */
+.stage h3 {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+/* contact sits on the planet horizon, with the black hole setting behind it */
+.contact {
+  position: relative;
+  min-height: 115svh;
+  padding-bottom: 30vh !important;
+}
+
+.horizon.set {
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  top: auto;
+  bottom: -38vh;
+  height: 62vh;
+  z-index: -1;
+}
+
+.footer {
+  border-top: 0;
+  background: #06050a;
+}
+
+@media (max-width: 900px) {
+  .ghost { font-size: 34vw; top: 18%; right: -6vw; }
+  .stack-row { grid-template-columns: 1fr; }
+  .stack-row > *, .stack-row .stack-no { grid-column: 1; grid-row: auto; padding-top: 0; }
+  .horizon.set { bottom: -42vh; }
+}
+
+.horizon.set { max-width: none !important; width: auto; }
+.ghost { -webkit-text-stroke-color: rgba(243, 237, 226, 0.17); right: 3vw; }
+@media (max-width: 900px) {
+  .hero-meta { display: none; }
+  .hero-main { top: 43%; }
+  .hero .horizon { top: 49%; }
+  .hero-foot { border-top: 0; }
+}
+
+/* =========================================================================
+   Performance: nothing that repaints big areas every frame
+   ========================================================================= */
+.hud {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(10, 8, 14, 0.88);
+}
+
+.grain {
+  animation: none;
+  inset: 0;
+  opacity: 0.045;
+}
+
+.ghost,
+.hero-main,
+.hero-meta,
+.cursor {
+  will-change: transform;
+}
+
+.universe {
+  will-change: contents;
+}
+
+/* =========================================================================
+   Mobile: no layout jumps while scrolling, readable text, compact HUD
+   ========================================================================= */
+@media (max-width: 900px) {
+  /* rows only fill in while scrolling; details open on tap (in the dialog), so nothing jumps */
+  .row.active .row-more { grid-template-rows: 0fr; }
+  .row.active { padding-left: 0; }
+  .row.active::before { opacity: 0.6; }
+
+  .hud {
+    left: 50%;
+    right: auto;
+    bottom: 12px;
+    transform: translateX(-50%);
+    padding: 7px 14px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .ghost { -webkit-text-stroke-color: rgba(243, 237, 226, 0.1); }
+
+  main > section > p:not(.kicker),
+  .work-intro,
+  .stack-intro,
+  .journey-intro,
+  .row-desc {
+    text-shadow: 0 1px 12px rgba(6, 5, 10, 0.9);
+  }
+
+  .topbar.open .menu {
+    top: 0;
+    bottom: 0;
+    padding-top: 100px;
+    background: rgba(6, 5, 10, 0.98);
+    z-index: -1;
+  }
+
+  .topbar.open .menu a {
+    padding: 18px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--line);
+  }
+}
+@media (max-width: 900px) {
+  .topbar { background: linear-gradient(180deg, rgba(6, 5, 10, 0.96) 55%, rgba(6, 5, 10, 0)); }
+}
