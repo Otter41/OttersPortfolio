@@ -169,7 +169,7 @@ const universe = createUniverse($('#universe'));
 
 function createUniverse(canvas) {
   const context = canvas.getContext('2d');
-  const count = isNarrow() ? 2000 : 5200;
+  const count = isNarrow() ? 1500 : 3800;
   const maskSize = 360;
   const shapes = {};
 
@@ -207,8 +207,13 @@ function createUniverse(canvas) {
   let lookTargetX = 0;
   let lookTargetY = 0;
   let lastTime = performance.now();
+  let quality = 1;
+  let active = count;
+  let slowFrames = 0;
   let yawDegrees = 0;
   let explode = 0;
+  let warp = 0;
+  let warpTarget = 0;
 
   const stage = {
     x: 0,
@@ -727,6 +732,11 @@ function createUniverse(canvas) {
     const narrow = isNarrow();
     const shortest = Math.min(width, height);
 
+    if (name === 'hero' && window.HERO_PLACE && !narrow) {
+      const h = window.HERO_PLACE;
+      return { x: width * h.x, y: height * h.y, radius: Math.min(width * h.rw, height * h.rh), dim: 1 };
+    }
+
     if (name === 'hero') {
       return narrow
         ? { x: width * 0.5, y: height * 0.36, radius: Math.min(width * 0.46, height * 0.3), dim: 1 }
@@ -738,7 +748,7 @@ function createUniverse(canvas) {
     }
 
     return narrow
-      ? { x: width * 0.5, y: height * 0.42, radius: Math.min(width * 0.4, height * 0.26), dim: 0.38 }
+      ? { x: width * 0.5, y: height * 0.42, radius: Math.min(width * 0.4, height * 0.26), dim: 0.2 }
       : { x: width * 0.77, y: height * 0.5, radius: Math.min(width * 0.17, height * 0.33), dim: 1 };
   }
 
@@ -755,6 +765,10 @@ function createUniverse(canvas) {
 
     tiltTarget = settings.tilt;
     spinSpeed = settings.spin;
+
+    if (!reducedMotion && document.body.classList.contains('loaded')) {
+      stage.radius *= 0.84;
+    }
     Object.assign(stageTarget, placement(settings.place));
 
     for (let index = 0; index < count; index++) {
@@ -822,7 +836,7 @@ function createUniverse(canvas) {
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    pixelRatio = Math.min(window.devicePixelRatio || 1, isNarrow() ? 1.25 : 1.75);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, isNarrow() ? 1 : 1.25) * quality;
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -849,7 +863,7 @@ function createUniverse(canvas) {
 
     spinAngle += spinSpeed * 16.7 * step;
 
-    for (let index = 0; index < count; index++) {
+    for (let index = 0; index < active; index++) {
       if (now < wakes[index]) {
         velocityX[index] *= damping;
         velocityY[index] *= damping;
@@ -900,6 +914,7 @@ function createUniverse(canvas) {
     context.fillStyle = 'rgba(6,5,10,0.6)';
     context.fillRect(0, 0, width, height);
 
+    warp += (warpTarget - warp) * 0.12;
     lookX += (lookTargetX - lookX) * 0.05;
     lookY += (lookTargetY - lookY) * 0.05;
     tilt += (tiltTarget - tilt) * 0.04;
@@ -927,20 +942,32 @@ function createUniverse(canvas) {
 
     context.globalCompositeOperation = 'lighter';
 
+    // Batched drawing: stars are grouped by colour and brightness so each group
+    // is one fill call, instead of thousands of individual draw calls per frame.
+    const LEVELS = 6;
+    const dots = new Array(palette.length * LEVELS);
+    const trails = new Array(palette.length * LEVELS);
+    const bucket = alpha => Math.min(LEVELS - 1, Math.floor(alpha * LEVELS));
+
     for (const star of backdrop) {
       const twinkle = reducedMotion ? 0.7 : 0.45 + Math.sin(now * 0.0012 + star.phase) * 0.35;
       const x = ((star.x * width - yaw * 60 * star.depth) % width + width) % width;
       const y = star.y * height - window.scrollY * 0.05 * star.depth;
       const wrappedY = (y % height + height) % height;
-
       const starSize = (0.6 + star.depth) * starScale;
+      const alpha = clamp(twinkle * (0.25 + star.depth * 0.45) * starBoost);
+      const key = (star.warm ? 2 : 0) * LEVELS + bucket(alpha);
+      const path = dots[key] || (dots[key] = new Path2D());
 
-      context.globalAlpha = clamp(twinkle * (0.25 + star.depth * 0.45) * starBoost);
-      context.fillStyle = star.warm ? cssPalette[2] : cssPalette[0];
-      context.fillRect(x, wrappedY, starSize, starSize);
+      if (Math.abs(warp) > 0.04) {
+        const streak = warp * (8 + star.depth * 90);
+        path.rect(x, streak > 0 ? wrappedY : wrappedY + streak, starSize * 0.8, Math.abs(streak) + starSize);
+      } else {
+        path.rect(x, wrappedY, starSize, starSize);
+      }
     }
 
-    for (let index = 0; index < count; index++) {
+    for (let index = 0; index < active; index++) {
       const x = positionX[index] * (1 + explode * 1.2);
       const y = positionY[index] * (1 + explode * 1.2);
       const z = positionZ[index] - explode * 0.5;
@@ -976,30 +1003,41 @@ function createUniverse(canvas) {
 
       const size = sizes[index] * perspective * sizeScale;
       const colour = colors[index];
-      const travelX = projectedX - previousX;
-      const travelY = projectedY - previousY;
-      const travel = Math.abs(travelX) + Math.abs(travelY);
-
-      context.globalAlpha = alpha;
+      const travel = Math.abs(projectedX - previousX) + Math.abs(projectedY - previousY);
+      const key = colour * LEVELS + bucket(alpha);
 
       if (travel > 14 && travel < 260 && !reducedMotion) {
-        context.globalAlpha = alpha * 0.45;
-        context.strokeStyle = cssPalette[colour];
-        context.lineWidth = size * 0.7;
-        context.beginPath();
-        context.moveTo(previousX, previousY);
-        context.lineTo(projectedX, projectedY);
-        context.stroke();
+        const path = trails[key] || (trails[key] = new Path2D());
+        path.moveTo(previousX, previousY);
+        path.lineTo(projectedX, projectedY);
       } else {
-        context.fillStyle = cssPalette[colour];
-        context.fillRect(projectedX - size / 2, projectedY - size / 2, size, size);
+        const path = dots[key] || (dots[key] = new Path2D());
+        path.rect(projectedX - size / 2, projectedY - size / 2, size, size);
       }
 
       if (index % 29 === 0) {
         const glow = size * 9;
-
         context.globalAlpha = alpha * 0.5;
         context.drawImage(sprites[colour], projectedX - glow, projectedY - glow, glow * 2, glow * 2);
+      }
+    }
+
+    context.lineWidth = narrow ? 1.3 : 1.1;
+
+    for (let key = 0; key < dots.length; key++) {
+      const level = (key % LEVELS + 0.5) / LEVELS;
+      const colour = cssPalette[Math.floor(key / LEVELS)];
+
+      if (dots[key]) {
+        context.globalAlpha = level;
+        context.fillStyle = colour;
+        context.fill(dots[key]);
+      }
+
+      if (trails[key]) {
+        context.globalAlpha = level * 0.45;
+        context.strokeStyle = colour;
+        context.stroke(trails[key]);
       }
     }
 
@@ -1008,8 +1046,20 @@ function createUniverse(canvas) {
   }
 
   function frame(now) {
-    const step = clamp((now - lastTime) / 16.7, 0.2, 3);
+    const elapsed = now - lastTime;
+    const step = clamp(elapsed / 16.7, 0.2, 3);
     lastTime = now;
+
+    // if the machine keeps missing frames, quietly drop resolution and star count
+    if (!document.hidden && elapsed < 200) {
+      slowFrames = elapsed > 24 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+      if (slowFrames > 45 && quality > 0.7) {
+        quality = 0.7;
+        active = Math.round(count * 0.6);
+        slowFrames = 0;
+        resize();
+      }
+    }
 
     if (!document.hidden) {
       update(now, step);
@@ -1056,11 +1106,17 @@ function createUniverse(canvas) {
     requestAnimationFrame(frame);
   }
 
+  function setWarp(value) {
+    warpTarget = reducedMotion ? 0 : value;
+  }
+
   return {
     setScene,
     setExplode,
+    setWarp,
     count,
-    yaw: () => yawDegrees
+    yaw: () => yawDegrees,
+    look: () => ({ x: lookX, y: lookY })
   };
 }
 
@@ -1351,9 +1407,260 @@ function runIntro(now) {
 
   preloader.classList.add('done');
   document.body.classList.add('loaded');
+  setTimeout(() => document.body.classList.add('opened'), reducedMotion ? 0 : 500);
   pickScene();
   paintProgress();
   paintHud();
 }
 
 requestAnimationFrame(runIntro);
+
+
+/* =========================================================================
+   Cinematic layer — smooth scroll, warp, word scrub, cursor, parallax.
+   ========================================================================= */
+
+/* ---------- inertial smooth scroll ---------- */
+const smoothScroll = (() => {
+  if (!finePointer || reducedMotion) {
+    return null;
+  }
+
+  document.documentElement.classList.add('smooth');
+
+  let target = window.scrollY;
+  let current = window.scrollY;
+  let frameId = null;
+  const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+
+  function step() {
+    current += (target - current) * 0.15;
+
+    if (Math.abs(target - current) < 0.4) {
+      current = target;
+      frameId = null;
+    } else {
+      frameId = requestAnimationFrame(step);
+    }
+
+    window.scrollTo(0, current);
+  }
+
+  function to(value) {
+    target = clamp(value, 0, maxScroll());
+    if (!frameId) {
+      current = window.scrollY;
+      frameId = requestAnimationFrame(step);
+    }
+  }
+
+  window.addEventListener('wheel', event => {
+    if (event.ctrlKey || event.target.closest('dialog') || dialog.open) {
+      return;
+    }
+
+    event.preventDefault();
+    const delta = event.deltaMode === 1 ? event.deltaY * 36 : event.deltaMode === 2 ? event.deltaY * window.innerHeight : event.deltaY;
+    to((frameId ? target : window.scrollY) + delta);
+  }, { passive: false });
+
+  // keyboard, scrollbar and anything else that scrolls natively takes over cleanly
+  window.addEventListener('scroll', () => {
+    if (!frameId) {
+      target = current = window.scrollY;
+    }
+  }, { passive: true });
+
+  return { to };
+})();
+
+$$('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', event => {
+    const id = link.getAttribute('href');
+    const section = id.length > 1 ? $(id) : null;
+    if (!section || !smoothScroll) {
+      return;
+    }
+    event.preventDefault();
+    smoothScroll.to(id === '#top' ? 0 : section.getBoundingClientRect().top + window.scrollY);
+  });
+});
+
+/* ---------- scroll velocity → warp streaks ---------- */
+let lastScrollY = window.scrollY;
+let velocity = 0;
+
+(function watchVelocity() {
+  const y = window.scrollY;
+  velocity += ((y - lastScrollY) - velocity) * 0.25;
+  lastScrollY = y;
+  universe.setWarp(clamp(velocity / 38, -1.4, 1.4));
+  requestAnimationFrame(watchVelocity);
+})();
+
+/* ---------- statement lights up word by word as it crosses the screen ---------- */
+const manifestoWords = $$('.manifesto-text .w');
+
+function paintWords() {
+  const line = window.innerHeight * 0.66;
+  manifestoWords.forEach(word => {
+    word.classList.toggle('on', word.getBoundingClientRect().top < line);
+  });
+}
+
+
+
+/* ---------- hero parallax ---------- */
+const heroMain = $('.hero-main');
+const heroMeta = $('.hero-meta');
+
+let heroWasVisible = true;
+
+(function parallax() {
+  const look = universe.look();
+  const k = clamp(window.scrollY / window.innerHeight);
+  if (k >= 1 && !heroWasVisible) {
+    requestAnimationFrame(parallax);
+    return;
+  }
+  heroWasVisible = k < 1;
+  heroMain.style.transform = 'translate3d(' + (look.x * -14) + 'px,' + (look.y * -10 - k * 120) + 'px,0)';
+  heroMain.style.opacity = String(1 - k * 1.1);
+  heroMeta.style.transform = 'translate3d(' + (look.x * -6) + 'px,' + (look.y * -4) + 'px,0)';
+  requestAnimationFrame(parallax);
+})();
+
+/* ---------- cursor ---------- */
+if (finePointer && !reducedMotion) {
+  document.documentElement.classList.add('has-cursor');
+
+  const cursor = document.createElement('div');
+  cursor.className = 'cursor';
+  cursor.setAttribute('aria-hidden', 'true');
+  cursor.innerHTML = '<div class="cursor-ring"><span></span></div><div class="cursor-dot"></div>';
+  document.body.append(cursor);
+
+  const ring = cursor.querySelector('.cursor-ring');
+  const dot = cursor.querySelector('.cursor-dot');
+  const label = cursor.querySelector('span');
+
+  let rx = window.innerWidth / 2;
+  let ry = window.innerHeight / 2;
+  let tx = rx;
+  let ty = ry;
+  let moving = false;
+
+  window.addEventListener('pointermove', event => {
+    tx = event.clientX;
+    ty = event.clientY;
+    // the dot is the real pointer: it moves instantly, never lags
+    dot.style.transform = 'translate3d(' + tx + 'px,' + ty + 'px,0)';
+    cursor.classList.add('live');
+    if (!moving) {
+      moving = true;
+      requestAnimationFrame(follow);
+    }
+  }, { passive: true });
+
+  function follow() {
+    rx += (tx - rx) * 0.35;
+    ry += (ty - ry) * 0.35;
+    ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0)';
+    if (Math.abs(tx - rx) + Math.abs(ty - ry) > 0.3) {
+      requestAnimationFrame(follow);
+    } else {
+      moving = false;
+    }
+  }
+
+  function stateFor(target) {
+    const clickable = target.closest('a, button, [role="button"], .row');
+    if (!clickable) {
+      return { kind: '', text: '' };
+    }
+    if (clickable.matches('.row')) {
+      return { kind: 'label', text: 'VIEW' };
+    }
+    if (clickable.matches('a[target="_blank"]')) {
+      return { kind: 'label', text: 'OPEN ↗' };
+    }
+    return { kind: 'link', text: '' };
+  }
+
+  document.addEventListener('pointerover', event => {
+    const state = stateFor(event.target);
+    cursor.classList.toggle('label', state.kind === 'label');
+    cursor.classList.toggle('link', state.kind === 'link');
+    if (state.text) {
+      label.textContent = state.text;
+    }
+  });
+
+  document.addEventListener('pointerdown', () => cursor.classList.add('down'));
+  document.addEventListener('pointerup', () => cursor.classList.remove('down'));
+  document.documentElement.addEventListener('pointerleave', () => cursor.classList.remove('live'));
+  document.documentElement.addEventListener('pointerenter', () => cursor.classList.add('live'));
+
+  // the dialog is drawn above everything, so hand back the normal cursor while it's open
+  const projectDialog = $('#projectDialog');
+  new MutationObserver(() => {
+    document.documentElement.classList.toggle('dialog-open', projectDialog.open);
+  }).observe(projectDialog, { attributes: true, attributeFilter: ['open'] });
+}
+
+/* ---------- concept C: ghost words drift sideways as you scroll ---------- */
+const ghosts = $$('.ghost');
+
+function paintGhosts() {
+  ghosts.forEach(ghost => {
+    const bounds = ghost.parentElement.getBoundingClientRect();
+    if (bounds.bottom < 0 || bounds.top > window.innerHeight) {
+      return;
+    }
+    const k = (bounds.top + bounds.height / 2 - window.innerHeight / 2) / window.innerHeight;
+    ghost.style.transform = 'translate3d(' + (k * 7).toFixed(2) + 'vw,-50%,0)';
+  });
+}
+
+
+
+/* toolkit titles fill in one by one as they reach the middle of the screen */
+const toolRows = $$('.stack-row');
+
+function paintTools() {
+  const middle = window.innerHeight * 0.55;
+  toolRows.forEach(row => {
+    const bounds = row.getBoundingClientRect();
+    row.classList.toggle('lit', bounds.top < middle && bounds.bottom > middle * 0.5);
+  });
+}
+
+
+/* ---------- one batched pass per frame for all scroll-linked effects ---------- */
+const manifestoSection = $('.manifesto');
+let effectsQueued = false;
+
+function nearScreen(element, margin = 0.5) {
+  const bounds = element.getBoundingClientRect();
+  return bounds.bottom > -window.innerHeight * margin && bounds.top < window.innerHeight * (1 + margin);
+}
+
+function paintEffects() {
+  effectsQueued = false;
+  if (nearScreen(manifestoSection)) {
+    paintWords();
+  }
+  paintGhosts();
+  paintTools();
+}
+
+function queueEffects() {
+  if (!effectsQueued) {
+    effectsQueued = true;
+    requestAnimationFrame(paintEffects);
+  }
+}
+
+window.addEventListener('scroll', queueEffects, { passive: true });
+window.addEventListener('resize', queueEffects);
+paintEffects();

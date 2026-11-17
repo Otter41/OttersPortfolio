@@ -1150,3 +1150,189 @@ main > section > * {
     scroll-behavior: auto;
   }
 }
+
+/* =========================================================================
+   Cinematic layer
+   ========================================================================= */
+
+html.smooth {
+  scroll-behavior: auto;
+}
+
+/* letterbox bars that open like a film once the universe has loaded */
+.letterbox i {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 240;
+  height: 13vh;
+  background: #000;
+  transition: transform 1.8s var(--ease);
+  pointer-events: none;
+}
+
+.letterbox i:first-child {
+  top: 0;
+  transform-origin: top;
+}
+
+.letterbox i:last-child {
+  bottom: 0;
+  transform-origin: bottom;
+}
+
+.opened .letterbox i {
+  transform: scaleY(0);
+}
+
+/* statement: words light up one by one as they cross the screen */
+.manifesto-text .w,
+.manifesto-text.in .w {
+  opacity: 0.1;
+  filter: blur(6px);
+  transform: translateY(0.12em);
+  transition: opacity 0.7s ease, filter 0.7s ease, transform 0.9s var(--ease);
+  transition-delay: 0s;
+}
+
+.manifesto-text .w.on {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.manifesto {
+  min-height: 110vh;
+}
+
+.hero-main,
+.hero-meta {
+  will-change: transform;
+}
+
+/* cursor */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor .row {
+  cursor: none;
+}
+
+html.has-cursor.dialog-open,
+html.has-cursor.dialog-open * {
+  cursor: auto;
+}
+
+html.has-cursor.dialog-open .cursor {
+  opacity: 0;
+}
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 230;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cursor.live {
+  opacity: 1;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--ember);
+  transition: opacity 0.25s ease, transform 0s;
+}
+
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+}
+
+.cursor-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(243, 237, 226, 0.55);
+  border-radius: 50%;
+  transition: transform 0.45s var(--ease), background 0.35s ease, border-color 0.35s ease;
+}
+
+.cursor-ring span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.45s var(--ease);
+}
+
+/* any link or button: ring grows and warms up */
+.cursor.link .cursor-ring::before {
+  transform: scale(1.55);
+  border-color: var(--ember);
+  background: rgba(255, 122, 69, 0.1);
+}
+
+/* projects and external links: solid badge with a label, dot hides */
+.cursor.label .cursor-ring::before {
+  transform: scale(2.1);
+  border-color: transparent;
+  background: var(--ember);
+}
+
+.cursor.label .cursor-ring span {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.cursor.label .cursor-dot {
+  opacity: 0;
+}
+
+.cursor.down .cursor-ring::before {
+  transform: scale(0.8);
+}
+
+.cursor.label.down .cursor-ring::before {
+  transform: scale(1.8);
+}
+
+/* rows feel more alive on hover */
+.row-title {
+  transition: color 0.4s ease, letter-spacing 0.7s var(--ease);
+}
+
+.row:hover .row-title {
+  letter-spacing: -0.03em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letterbox {
+    display: none;
+  }
+}

@@ -14,9 +14,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
-  <script src="otter-reference.js?v=3" defer></script>
-  <script src="script.js?v=3" defer></script>
+  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="concept.css?v=6">
+  <script>window.HERO_PLACE = {x:0.5,y:0.47,rw:0.2,rh:0.36};</script>
+  <script src="otter-reference.js?v=6" defer></script>
+  <script src="script.js?v=6" defer></script>
 </head>
 <body>
   <div class="preloader" id="preloader" aria-hidden="true">
@@ -25,6 +27,7 @@
   </div>
 
   <canvas class="universe" id="universe" aria-hidden="true"></canvas>
+  <div class="letterbox" aria-hidden="true"><i></i><i></i></div>
   <div class="vignette" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
@@ -59,20 +62,20 @@
 
   <main>
     <section class="hero" id="top" data-scene="otter" aria-labelledby="heroTitle">
+      <div class="horizon" aria-hidden="true"></div>
       <div class="hero-meta">
         <p class="kicker">A DIFFERENT KIND OF DIGITAL WORKSHOP</p>
         <p class="kicker">DESIGN / DEVELOPMENT / CURIOSITY</p>
       </div>
 
       <div class="hero-main">
-        <h1 class="hero-title" id="heroTitle">Otter<span class="dot">.</span></h1>
-        <p class="hero-role">Junior full-stack developer<br>and graphics designer.</p>
+        <h1 class="hero-title" id="heroTitle">OTTER<span class="dot">.</span></h1>
       </div>
 
       <div class="hero-foot">
-        <p class="hero-line">Software, games, and interfaces built with an eye for the details that matter.</p>
-        <p class="hero-hint">Move your cursor through the otter.</p>
-        <a class="hero-scroll" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
+        <div><span class="kicker">ROLE</span><p class="hero-role">Junior full-stack developer and graphics designer.</p></div>
+        <div><span class="kicker">FOCUS</span><p class="hero-line">Software, games, and interfaces built with an eye for the details that matter.</p></div>
+        <div><span class="kicker">ENTER</span><a class="hero-scroll" href="#work">Explore the work <span aria-hidden="true">↓</span></a><p class="hero-hint">Move your cursor through the otter.</p></div>
       </div>
     </section>
 
@@ -84,6 +87,7 @@
     </section>
 
     <section class="work" id="work" data-scene="work" aria-labelledby="workTitle">
+      <div class="ghost" aria-hidden="true">WORK</div>
       <div class="work-head">
         <p class="kicker reveal">02 / SELECTED WORK</p>
         <h2 id="workTitle" class="reveal reveal-words">Selected <em>work.</em></h2>
@@ -220,6 +224,7 @@
     </section>
 
     <section class="about" id="about" data-scene="galaxy" aria-labelledby="aboutTitle">
+      <div class="ghost" aria-hidden="true">ABOUT</div>
       <p class="kicker reveal">03 / THE PERSON BEHIND IT</p>
       <h2 id="aboutTitle" class="about-title reveal reveal-words">Part designer. Part developer. <em>Always exploring.</em></h2>
       <p class="reveal">My starting point was graphic design. Programming gave that curiosity a new set of tools. Now, as a junior full-stack developer and graphics designer, I gravitate toward projects where the interface, interaction, and underlying logic all matter.</p>
@@ -228,6 +233,7 @@
     </section>
 
     <section class="stack" id="stack" data-scene="code" aria-labelledby="stackTitle">
+      <div class="ghost" aria-hidden="true">TOOLKIT</div>
       <p class="kicker reveal">04 / WHAT I WORK WITH</p>
       <h2 id="stackTitle" class="reveal reveal-words">The <em>toolkit.</em></h2>
       <p class="stack-intro reveal">A mix of development, visual design, and things I'm actively learning. Not a claim to have mastered every tool in the box.</p>
@@ -255,6 +261,7 @@
     </section>
 
     <section class="journey" id="next" data-scene="shield" aria-labelledby="nextTitle">
+      <div class="ghost" aria-hidden="true">NEXT</div>
       <p class="kicker reveal">05 / THE NEXT CHAPTER</p>
       <h2 id="nextTitle" class="reveal reveal-words">The journey <em>keeps going.</em></h2>
       <p class="journey-intro reveal">Full-stack engineering and design are the foundation. Next I'm building my cybersecurity knowledge, followed by Microsoft Azure and cloud security. I want to understand how systems are built, protected, and run.</p>
@@ -282,6 +289,8 @@
     </section>
 
     <section class="contact" id="contact" data-scene="blackhole" aria-labelledby="contactTitle">
+      <div class="horizon set" aria-hidden="true"></div>
+      <div class="ghost" aria-hidden="true">HELLO</div>
       <p class="kicker reveal">06 / SAY HELLO</p>
       <h2 id="contactTitle" class="contact-title reveal reveal-words">Let's make something <em>worth remembering.</em></h2>
       <p class="reveal">Into interesting software, unusual interfaces, and building things that don't look like everything else? So am I.</p>
